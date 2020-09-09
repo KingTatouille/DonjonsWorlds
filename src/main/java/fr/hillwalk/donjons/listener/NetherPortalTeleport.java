@@ -92,9 +92,6 @@ public class NetherPortalTeleport implements Listener {
                 try {
                     Entity entity = MythicMobs.inst().getAPIHelper().spawnMythicMob(mobName, DonjonsMain.mobSpawn.get(mobName));
 
-                    System.out.println(DonjonsMain.worlds);
-                    System.out.println(mob);
-                    System.out.println(entity.getName());
                     DonjonsMain.mobs.add(UtilsRef.colorInfo(entity.getName()));
                 } catch (InvalidMobTypeException e) {
                     e.printStackTrace();

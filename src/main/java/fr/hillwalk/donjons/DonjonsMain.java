@@ -5,6 +5,8 @@ import fr.hillwalk.donjons.commands.Commands;
 import fr.hillwalk.donjons.configs.ConfigManager;
 import fr.hillwalk.donjons.listener.MobDeathEvent;
 import fr.hillwalk.donjons.listener.NetherPortalTeleport;
+import fr.hillwalk.donjons.runnable.SchematicLoad;
+import fr.hillwalk.donjons.runnable.TimerLoad;
 import fr.hillwalk.donjons.teleportation.GenerationStructure;
 import fr.hillwalk.donjons.utils.UtilsRef;
 import io.lumine.xikage.mythicmobs.mobs.MythicMob;
@@ -15,6 +17,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.io.IOException;
@@ -41,6 +44,9 @@ public class DonjonsMain extends JavaPlugin {
     @Override
     public void onEnable(){
 
+        BukkitRunnable load = new TimerLoad();
+        BukkitRunnable loadSchematic = new SchematicLoad();
+
         //Dire que l'instance est cette classe.
         instance = this;
 
@@ -66,7 +72,11 @@ public class DonjonsMain extends JavaPlugin {
         prefix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("prefix") + " ");
 
         //On invoque le timer
-        onTimer();
+        load.runTaskTimer(this, getConfig().getLong("startTiming"), getConfig().getLong("repeatTiming"));
+
+        //On load la schematic
+        loadSchematic.runTaskLater(this, getConfig().getLong("timing"));
+
 
         //Si le serveur s'est éteint sans avoir complété le donjon
         if(ConfigManager.get().getString("location") == null){
@@ -103,56 +113,6 @@ public class DonjonsMain extends JavaPlugin {
 
 
         getLogger().info("is unloaded!");
-
-    }
-
-
-    public void onTimer(){
-
-            BukkitScheduler scheduler = getServer().getScheduler();
-            scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
-                @Override
-                public void run() {
-
-                    if(Bukkit.getServer().getOnlinePlayers().isEmpty()){
-                        if(UtilsRef.randomNumber(2) == 1){
-                        getLogger().info("No players online !");
-                        }
-
-                        return;
-
-                    }
-
-
-                    if(ConfigManager.get().getBoolean("OpenPortail")){
-
-                    } else {
-                        onSecondTimer();
-                        Bukkit.broadcastMessage("Attention ! \nUn portail va apparaître dans : " + ChatColor.GOLD +  UtilsRef.timerMessage(getConfig().getInt("durationSeconds")));
-                        ConfigManager.get().set("OpenPortail", true);
-                        ConfigManager.save();
-                    }
-
-                }
-            }, getConfig().getLong("startTiming"), getConfig().getLong("repeatTiming"));
-    }
-
-    public void onSecondTimer(){
-
-
-        BukkitScheduler scheduler = getServer().getScheduler();
-        scheduler.scheduleSyncDelayedTask(this, new Runnable() {
-            @Override
-            public void run() {
-
-                GenerationStructure ref = new GenerationStructure();
-                try {
-                    ref.loadSchematic();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, getConfig().getLong("timing"));
 
     }
 
