@@ -2,6 +2,7 @@ package fr.hillwalk.donjons.listener;
 
 import fr.hillwalk.donjons.DonjonsMain;
 import fr.hillwalk.donjons.configs.ConfigManager;
+import fr.hillwalk.donjons.reflexion.Title;
 import fr.hillwalk.donjons.teleportation.GenerationStructure;
 import io.lumine.xikage.mythicmobs.api.bukkit.events.MythicMobDeathEvent;
 import org.bukkit.Bukkit;
@@ -15,6 +16,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import static sun.audio.AudioPlayer.player;
 
 public class MobDeathEvent implements Listener {
 
@@ -25,50 +30,43 @@ public class MobDeathEvent implements Listener {
         if(!e.getMob().getLocation().getWorld().getName().equalsIgnoreCase(DonjonsMain.worlds.get(0))) return;
         if(!e.getMob().getDisplayName().equalsIgnoreCase(DonjonsMain.mobs.get(0))) return;
 
+        final Title sendTitle = new Title();
 
-        final BukkitScheduler scheduler = DonjonsMain.instance.getServer().getScheduler();
-        scheduler.scheduleSyncRepeatingTask(DonjonsMain.instance, new Runnable() {
 
-            int number = 0;
+        final Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask(){
 
+            int number = 1;
 
             @Override
-            public void run() {
-
+            public void run(){
                 if(number == 0) {
                     Bukkit.broadcastMessage(DonjonsMain.prefix + DonjonsMain.mobs.get(0) + ChatColor.WHITE + " vient de succomber à ses blessures !");
                 }
 
-                Bukkit.broadcastMessage(DonjonsMain.prefix + "Vous allez être téléporté dans : " + ChatColor.GREEN + number);
 
+                for(Player player : Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)).getPlayers()){
+                 sendTitle.sendTitle(player, String.valueOf(number++), 5, 5, 5, ChatColor.GREEN);
+                }
                 if(number == 5){
-                   for(Player player : Bukkit.getServer().getOnlinePlayers()){
-                       if(player.getWorld().getName().equalsIgnoreCase(DonjonsMain.worlds.get(0))){
+                    for(Player player : Bukkit.getServer().getOnlinePlayers()){
+                        if(player.getWorld().getName().equalsIgnoreCase(DonjonsMain.worlds.get(0))){
 
-                           player.teleport(new Location(Bukkit.getServer().getWorld(DonjonsMain.instance.getConfig().getString("world")), Bukkit.getServer().getWorld(DonjonsMain.instance.getConfig().getString("world")).getSpawnLocation().getBlockX(), Bukkit.getServer().getWorld(DonjonsMain.instance.getConfig().getString("world")).getSpawnLocation().getBlockY(), Bukkit.getServer().getWorld(DonjonsMain.instance.getConfig().getString("world")).getSpawnLocation().getBlockZ()));
-                           player.sendMessage(DonjonsMain.prefix + "Le donjon est terminé ! Vous avez été téléporté au spawn !");
+                            player.teleport(new Location(Bukkit.getServer().getWorld(DonjonsMain.instance.getConfig().getString("world")), Bukkit.getServer().getWorld(DonjonsMain.instance.getConfig().getString("world")).getSpawnLocation().getBlockX(), Bukkit.getServer().getWorld(DonjonsMain.instance.getConfig().getString("world")).getSpawnLocation().getBlockY(), Bukkit.getServer().getWorld(DonjonsMain.instance.getConfig().getString("world")).getSpawnLocation().getBlockZ()));
+                            player.sendMessage(DonjonsMain.prefix + "Le donjon est terminé ! Vous avez été téléporté au spawn !");
 
-                       }
+                        }
 
-                   }
+                    }
                     ConfigManager.get().set("OpenPortail", false);
                     ConfigManager.save();
-                   scheduler.cancelTasks(DonjonsMain.instance);
+                    timer.cancel();
                 }
                 number++;
             }
-
-        }, 20L, 20L);
-
-    }
-
-
-    public void unloadWorld(){
-
-        Bukkit.getServer().unloadWorld(DonjonsMain.worlds.get(0), false);
-        DonjonsMain.instance.getLogger().info("The world : " +  DonjonsMain.worlds.get(0) + " is now unloaded.");
-
+        }, 1000, 1000);
 
     }
+
 
 }

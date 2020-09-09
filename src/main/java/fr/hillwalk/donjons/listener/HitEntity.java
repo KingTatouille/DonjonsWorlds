@@ -23,15 +23,15 @@ public class HitEntity implements Listener {
         if(!e.getEntity().getName().equalsIgnoreCase(DonjonsMain.mobs.get(0))) return;
 
 
-        if(e.getEntity() instanceof Player){
-
             Player player = (Player) e.getEntity();
 
+
+            //Quand le joueur touche le monstre il sera mit dans la
             if(!DonjonsMain.playerHits.contains(player.getUniqueId())){
 
                 DonjonsMain.playerHits.add(player.getUniqueId());
+                System.out.println(DonjonsMain.playerHits);
 
-            }
         }
 
     }
