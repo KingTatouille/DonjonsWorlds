@@ -36,9 +36,9 @@ public class TimerLoad extends BukkitRunnable {
         }
 
 
-        if(ConfigManager.get().getBoolean("OpenPortail")){
-
-        } else {
+        if(!ConfigManager.get().getBoolean("OpenPortail")){
+            BukkitRunnable loadSchematic = new SchematicLoad();
+            loadSchematic.runTaskLater(DonjonsMain.instance, DonjonsMain.instance.getConfig().getLong("timing"));
             Bukkit.broadcastMessage("Attention ! \nUn portail va apparaître dans : " + ChatColor.GOLD +  UtilsRef.timerMessage(DonjonsMain.instance.getConfig().getInt("durationSeconds")));
             ConfigManager.get().set("OpenPortail", true);
             ConfigManager.save();

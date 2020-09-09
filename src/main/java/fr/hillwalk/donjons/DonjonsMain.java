@@ -45,7 +45,6 @@ public class DonjonsMain extends JavaPlugin {
     public void onEnable(){
 
         BukkitRunnable load = new TimerLoad();
-        BukkitRunnable loadSchematic = new SchematicLoad();
 
         //Dire que l'instance est cette classe.
         instance = this;
@@ -75,7 +74,7 @@ public class DonjonsMain extends JavaPlugin {
         load.runTaskTimer(this, getConfig().getLong("startTiming"), getConfig().getLong("repeatTiming"));
 
         //On load la schematic
-        loadSchematic.runTaskLater(this, getConfig().getLong("timing"));
+
 
 
         //Si le serveur s'est éteint sans avoir complété le donjon
@@ -89,7 +88,7 @@ public class DonjonsMain extends JavaPlugin {
             ConfigManager.get().set("location.y", null);
             ConfigManager.get().set("location.z", null);
             ConfigManager.get().set("OpenPortail", false);
-            ConfigManager.get().set("summonBoss", false);
+            ConfigManager.get().set("summonedBoss", null);
             ConfigManager.save();
         }
 

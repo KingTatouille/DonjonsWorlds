@@ -33,7 +33,7 @@ public class EndDonjons extends BukkitRunnable {
         }
 
        for(Player player : Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)).getPlayers()){
-            sendTitle.sendTitle(player, String.valueOf(number), 10, 5, 5, ChatColor.GREEN);
+            sendTitle.sendTitle(player, "&4" + String.valueOf(number), 1, 1, 1, ChatColor.GREEN);
        }
 
         if(number == 5){
@@ -56,20 +56,15 @@ public class EndDonjons extends BukkitRunnable {
 
     public void removeAll(){
 
-        //Si le serveur s'est éteint sans avoir complété le donjon
-        if(ConfigManager.get().getString("location") == null){
-            return;
 
-        } else {
             GenerationStructure.pasteChem();
             ConfigManager.get().set("location", null);
             ConfigManager.get().set("location.x", null);
             ConfigManager.get().set("location.y", null);
             ConfigManager.get().set("location.z", null);
             ConfigManager.get().set("OpenPortail", false);
-            ConfigManager.get().set("summonBoss", false);
+            ConfigManager.get().set("summonedBoss", null);
             ConfigManager.save();
-        }
 
         DonjonsMain.listPos.clear();
         DonjonsMain.undoShematic.clear();
@@ -80,6 +75,7 @@ public class EndDonjons extends BukkitRunnable {
 
 
     }
+
 
 
 
