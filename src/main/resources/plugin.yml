@@ -1,0 +1,10 @@
+name: RandomDonjons
+version: 1.0.0
+main: fr.hillwalk.donjons.DonjonsMain
+author: Hillwalk
+api-version: 1.15
+
+commands:
+  randomdonjon:
+    description: Commande principale.
+    aliases: rd

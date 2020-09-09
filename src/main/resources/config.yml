@@ -1,0 +1,42 @@
+#Prefix
+prefix: "&f[&6RandomDungeons&f] &7&l>>&r"
+
+#Position du portail
+minX: -500
+maxX: 500
+
+minZ: -500
+maxZ: 500
+
+#This is the principal world where the portals will spawn.
+world: world
+
+#Represent when the server is reloaded or started.
+startTiming: 600
+
+#Repeat the verifying task all 2 minutes
+repeatTiming: 2400
+
+#Timing in ticks
+timing: 600
+
+#duration in seconds / timing = durationSecons so 600 ticks = 30 seconds
+durationSeconds: 30
+
+#Support MythicMobs
+mythicMobs: true
+
+#Invok the boss
+summonBoss:
+  - SkeletonKing
+  - AngrySludge
+
+#Worlds
+worlds:
+  - test
+
+#Reverse is for material if you reverse you only need to say on what the portal can spawn.
+reverse: true
+#Materials
+materials:
+  - GRASS_BLOCK
