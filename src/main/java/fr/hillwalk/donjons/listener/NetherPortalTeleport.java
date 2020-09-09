@@ -86,6 +86,7 @@ public class NetherPortalTeleport implements Listener {
                 Location location = generation.findSafeLocationMob(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)).getSpawnLocation());
 
                 DonjonsMain.mobSpawn.put(mobName, location);
+                DonjonsMain.mobLocation.put(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)), location);
 
                 Location mob = DonjonsMain.mobSpawn.get(mobName);
 

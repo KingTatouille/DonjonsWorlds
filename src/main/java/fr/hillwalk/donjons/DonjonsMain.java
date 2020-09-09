@@ -35,7 +35,7 @@ public class DonjonsMain extends JavaPlugin {
     public static HashMap<String, Location> mobSpawn = new HashMap<String, Location>();
     public static HashMap<World, EditSession> undoShematic = new HashMap<>();
     public static List<String> mobs = new ArrayList<String>();
-
+    public static HashMap<World, Location> mobLocation = new HashMap<World, Location>();
 
     public static List<String> worlds = new ArrayList<String>();
     public static List<UUID> playerHits = new ArrayList<UUID>();

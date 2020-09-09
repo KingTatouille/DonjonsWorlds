@@ -13,6 +13,7 @@ import fr.hillwalk.donjons.teleportation.Selection;
 import fr.hillwalk.donjons.utils.UtilsRef;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -39,32 +40,37 @@ public class Commands implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
         Player player = (Player) sender;
-        GenerationStructure ref = new GenerationStructure();
 
         if(args.length == 0){
 
+            if(DonjonsMain.listPos.isEmpty()){
 
-            try {
-                ref.loadSchematic();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        return true;
-        }
-
-        if(args[0].equalsIgnoreCase("undo")){
-
-            if(DonjonsMain.undoShematic.isEmpty()){
-
-                player.sendMessage("Aucun portail n'est arrivé dans ce monde.");
+                player.sendMessage(UtilsRef.colorInfo(DonjonsMain.prefix + "Aucun donjon n'est apparu !"));
                 return true;
             }
 
+        }
 
-            //Il permet de faire le undo.
-            DonjonsMain.undoShematic.get(UtilsRef.principalWorld()).undo(DonjonsMain.undoShematic.get(UtilsRef.principalWorld()));
-            Bukkit.broadcastMessage("Le portail vient de disparaître !");
 
+        if(args[0].equalsIgnoreCase("pos")){
+
+           if(args[1].equalsIgnoreCase("portail")){
+            player.sendMessage(UtilsRef.colorInfo(DonjonsMain.prefix + "Les coordonnées sont :\nx : &6" +
+                    DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockX() +
+                    " &fy : &6" + DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockY() +
+                    " &fz : &6" + DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockZ()));
+            return true;
+           }
+
+           if(args[1].equalsIgnoreCase("boss")){
+
+               player.sendMessage(UtilsRef.colorInfo(DonjonsMain.prefix + "Les dernières coordonnées du boss sont :\n" + "x : &6" +
+                       DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockX() +
+                       " &fy : &6" + DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockY()) +
+                       " &fz: &6" + DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockZ());
+
+               return true;
+           }
             return true;
         }
 
