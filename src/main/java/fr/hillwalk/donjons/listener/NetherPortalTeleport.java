@@ -27,7 +27,14 @@ public class NetherPortalTeleport implements Listener {
     public void onTeleportation(PlayerTeleportEvent e){
 
         if(e.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL){
-            World world = UtilsRef.randomWorlds();
+
+           if(DonjonsMain.worlds.isEmpty()){
+               World world = UtilsRef.randomWorlds();
+               DonjonsMain.worlds.add(world.getName());
+           }
+
+
+           World world = Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0));
 
             if(world == null){
                 e.setCancelled(true);
@@ -44,9 +51,8 @@ public class NetherPortalTeleport implements Listener {
                 try{
 
 
-                    e.setTo(new Location(world, world.getSpawnLocation().getBlockX() ,world.getSpawnLocation().getBlockY() ,world.getSpawnLocation().getBlockZ()));
+                    e.setTo(new Location(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)), world.getSpawnLocation().getBlockX() ,world.getSpawnLocation().getBlockY() ,world.getSpawnLocation().getBlockZ()));
                     e.getPlayer().sendMessage(DonjonsMain.instance.prefix + "Vous venez d'être téléporté dans le monde : " + world.getName());
-                    DonjonsMain.worlds.add(world.getName());
                     onSummonMob();
 
                 } catch (NullPointerException ex){
@@ -60,10 +66,6 @@ public class NetherPortalTeleport implements Listener {
         } else {
             return;
         }
-
-
-
-
 
     }
 

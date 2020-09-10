@@ -72,6 +72,7 @@ public class EndDonjons extends BukkitRunnable {
         DonjonsMain.mobSpawn.clear();
         DonjonsMain.playerHits.clear();
         DonjonsMain.worlds.clear();
+        DonjonsMain.mobLocation.clear();
 
 
     }

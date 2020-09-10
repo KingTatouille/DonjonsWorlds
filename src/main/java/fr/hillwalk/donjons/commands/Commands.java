@@ -55,6 +55,22 @@ public class Commands implements CommandExecutor {
         if(args[0].equalsIgnoreCase("pos")){
 
            if(args[1].equalsIgnoreCase("portail")){
+
+               if(DonjonsMain.listPos.isEmpty()){
+
+                   if(!player.getWorld().getName().equalsIgnoreCase(DonjonsMain.worlds.get(0))){
+
+                    player.sendMessage(DonjonsMain.prefix + "Aucun portail n'est présent dans ce monde.");
+                    return true;
+                   } else {
+
+                       player.sendMessage(DonjonsMain.prefix + "Vous êtes dans un monde où cet événement ne peut se produire.");
+
+                   }
+                   return true;
+
+               }
+
             player.sendMessage(UtilsRef.colorInfo(DonjonsMain.prefix + "Les coordonnées sont :\nx : &6" +
                     DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockX() +
                     " &fy : &6" + DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockY() +
@@ -63,6 +79,21 @@ public class Commands implements CommandExecutor {
            }
 
            if(args[1].equalsIgnoreCase("boss")){
+
+               if(DonjonsMain.mobLocation.isEmpty()){
+
+                   if(!player.getWorld().getName().equalsIgnoreCase(DonjonsMain.worlds.get(0))){
+
+                       player.sendMessage(DonjonsMain.prefix + "Aucun boss n'est présent dans ce monde.");
+                       return true;
+                   } else {
+
+                       player.sendMessage(DonjonsMain.prefix + "Vous êtes dans un monde où cet événement ne peut se produire.");
+
+                   }
+                return true;
+
+               }
 
                player.sendMessage(UtilsRef.colorInfo(DonjonsMain.prefix + "Les dernières coordonnées du boss sont :\n" + "x : &6" +
                        DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockX() +
