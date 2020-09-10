@@ -217,7 +217,7 @@ public class GenerationStructure {
         Location randomLoc = new Location(Bukkit.getServer().getWorld(DonjonsMain.instance.getConfig().getString("world")), x,y,z);
 
         y = randomLoc.getWorld().getHighestBlockYAt(randomLoc);
-        randomLoc.setY(y + 1);
+        randomLoc.setY(y);
 
 
         return randomLoc;
@@ -228,13 +228,13 @@ public class GenerationStructure {
         Random random = new Random();
 
 
-        String negative = String.valueOf(DonjonsMain.instance.getConfig().getInt("minZ"));
+        String negative = String.valueOf(DonjonsMain.instance.getConfig().getInt("boss.minZ"));
         String replaceNegative = negative.replaceAll("-", "");
-        String negative1 = String.valueOf(DonjonsMain.instance.getConfig().getInt("minX"));
+        String negative1 = String.valueOf(DonjonsMain.instance.getConfig().getInt("boss.minX"));
         String replaceNegative1 = negative.replaceAll("-", "");
 
-        int calculX = random.nextInt((Integer.valueOf(replaceNegative1) + DonjonsMain.instance.getConfig().getInt("maxX")) / (random.nextInt(3) + 2));
-        int calculZ = random.nextInt((Integer.valueOf(replaceNegative) + DonjonsMain.instance.getConfig().getInt("maxZ")) / (random.nextInt(3) + 2));
+        int calculX = random.nextInt((Integer.valueOf(replaceNegative1) + DonjonsMain.instance.getConfig().getInt("boss.maxX")) / (random.nextInt(3) + 2));
+        int calculZ = random.nextInt((Integer.valueOf(replaceNegative) + DonjonsMain.instance.getConfig().getInt("boss.maxZ")) / (random.nextInt(3) + 2));
 
         int x = 0;
         int y = 150;

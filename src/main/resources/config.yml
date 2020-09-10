@@ -8,6 +8,13 @@ maxX: 500
 minZ: -500
 maxZ: 500
 
+boss:
+  minX: -100
+  maxX: 100
+
+  minZ: -100
+  maxZ: 100
+
 #This is the principal world where the portals will spawn.
 world: world
 

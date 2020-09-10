@@ -2,7 +2,6 @@ package fr.hillwalk.donjons.runnable;
 
 import fr.hillwalk.donjons.DonjonsMain;
 import fr.hillwalk.donjons.configs.ConfigManager;
-import fr.hillwalk.donjons.reflexion.Title;
 import fr.hillwalk.donjons.teleportation.GenerationStructure;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -23,8 +22,8 @@ public class EndDonjons extends BukkitRunnable {
      * @see Thread#run()
      */
 
-    Title sendTitle = new Title();
     int number = 1;
+
 
     @Override
     public void run() {
@@ -33,17 +32,14 @@ public class EndDonjons extends BukkitRunnable {
         }
 
        for(Player player : Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)).getPlayers()){
-            sendTitle.sendTitle(player, "&4" + String.valueOf(number), 1, 1, 1, ChatColor.GREEN);
+            player.sendTitle(ChatColor.GREEN + String.valueOf(number), null, 1, 5, 1);
        }
 
         if(number == 5){
             for(Player player : Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)).getPlayers()){
-                if(player.getWorld().getName().equalsIgnoreCase(DonjonsMain.worlds.get(0))){
 
                     player.teleport(new Location(Bukkit.getServer().getWorld(DonjonsMain.instance.getConfig().getString("world")), Bukkit.getServer().getWorld(DonjonsMain.instance.getConfig().getString("world")).getSpawnLocation().getBlockX(), Bukkit.getServer().getWorld(DonjonsMain.instance.getConfig().getString("world")).getSpawnLocation().getBlockY(), Bukkit.getServer().getWorld(DonjonsMain.instance.getConfig().getString("world")).getSpawnLocation().getBlockZ()));
                     player.sendMessage(DonjonsMain.prefix + "Le donjon est terminé ! Vous avez été téléporté au spawn !");
-
-                }
 
             }
             removeAll();
@@ -54,7 +50,7 @@ public class EndDonjons extends BukkitRunnable {
     }
 
 
-    public void removeAll(){
+    private void removeAll(){
 
 
             GenerationStructure.pasteChem();

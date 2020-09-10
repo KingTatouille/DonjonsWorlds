@@ -4,6 +4,7 @@ import fr.hillwalk.donjons.DonjonsMain;
 import org.apache.commons.lang.math.IntRange;
 import org.bukkit.*;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,8 +96,6 @@ public class UtilsRef {
                 && new IntRange(l1.getY(), l2.getY()).containsDouble(origin.getY())
                 &&  new IntRange(l1.getZ(), l2.getZ()).containsDouble(origin.getZ());
     }
-
-
 
 
 

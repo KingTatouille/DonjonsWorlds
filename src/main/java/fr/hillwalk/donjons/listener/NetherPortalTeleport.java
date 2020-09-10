@@ -88,19 +88,21 @@ public class NetherPortalTeleport implements Listener {
                 Location location = generation.findSafeLocationMob(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)).getSpawnLocation());
 
                 DonjonsMain.mobSpawn.put(mobName, location);
-                DonjonsMain.mobLocation.put(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)), location);
+
 
                 Location mob = DonjonsMain.mobSpawn.get(mobName);
 
                 try {
                     Entity entity = MythicMobs.inst().getAPIHelper().spawnMythicMob(mobName, DonjonsMain.mobSpawn.get(mobName));
+                    System.out.println(DonjonsMain.worlds.get(0));
+                    DonjonsMain.mobLocation.put(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)), entity.getLocation());
 
                     DonjonsMain.mobs.add(UtilsRef.colorInfo(entity.getName()));
                 } catch (InvalidMobTypeException e) {
                     e.printStackTrace();
                 }
 
-                Bukkit.broadcastMessage(DonjonsMain.prefix + "Le Boss vient d'apparaître en : " + "x: " + mob.getBlockX() + " y: " + mob.getBlockY() + " z: " + mob.getBlockZ());
+                Bukkit.broadcastMessage(DonjonsMain.prefix + mobName + " vient d'apparaître en : " + "x: " + DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockX() + " y: " + DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockY() + " z: " + DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockZ());
                 ConfigManager.get().set("summonedBoss", true);
                 ConfigManager.save();
 

@@ -46,6 +46,7 @@ public class DonjonsMain extends JavaPlugin {
 
         BukkitRunnable load = new TimerLoad();
 
+
         //Dire que l'instance est cette classe.
         instance = this;
 
