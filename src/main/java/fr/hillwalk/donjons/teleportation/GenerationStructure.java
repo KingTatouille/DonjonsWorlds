@@ -3,7 +3,6 @@ package fr.hillwalk.donjons.teleportation;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
@@ -15,13 +14,14 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
 import fr.hillwalk.donjons.DonjonsMain;
-import fr.hillwalk.donjons.configs.ConfigManager;
+import fr.hillwalk.donjons.configs.ConfigInformations;
+import fr.hillwalk.donjons.configs.ConfigMondes;
 import fr.hillwalk.donjons.utils.UtilsRef;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.WorldCreator;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,8 +48,15 @@ public class GenerationStructure {
 
 
     public void loadSchematic() throws IOException {
+        DonjonsMain.worlds.add(UtilsRef.randomWorlds());
 
-        Location location = findSafeLocation(Bukkit.getServer().getWorld(UtilsRef.principalWorld().getName()).getSpawnLocation());
+        try{
+            Location location = findSafeLocation(Bukkit.getServer().getWorld(UtilsRef.principalWorld().getName()).getSpawnLocation());
+        } catch(NullPointerException ex){
+            ex.getStackTrace();
+            DonjonsMain.instance.getLogger().info("Le nom du monde n'est pas correcte, regardez la config.");
+        }
+
 
         File schematic = new File(DonjonsMain.instance.getDataFolder().getAbsoluteFile() + "/schematics/portal.schematic");
 
@@ -68,12 +75,12 @@ public class GenerationStructure {
 
         World world = new BukkitWorld(UtilsRef.principalWorld());
 
-        BlockVector3 min = BlockVector3.at(DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockX(),
-                DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockY(),
-                DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockZ());
-        BlockVector3 max = BlockVector3.at(DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockX() + 7,
-                DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockY() + 256,
-                DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockZ() - 5);
+        BlockVector3 min = BlockVector3.at(ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x"),
+                ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y"),
+                ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z"));
+        BlockVector3 max = BlockVector3.at(ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") + 7,
+                ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") + 256,
+                ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") - 5);
 
         GenerationSchematic.copy(world, min, max);
 
@@ -87,26 +94,29 @@ public class GenerationStructure {
         try (ClipboardReader reader = format.getReader(new FileInputStream(schematic))) {
             Clipboard clipboard = reader.read();
 
-            try (EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession( new BukkitWorld(DonjonsMain.listPos.get(UtilsRef.principalWorld()).getWorld()), -1)) {
+            try (EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession( new BukkitWorld(UtilsRef.principalWorld()), -1)) {
 
                 Operation operation = new ClipboardHolder(clipboard)
                         .createPaste(editSession)
-                        .to(BlockVector3.at(DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockX(),
-                                DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockY(),
-                                DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockZ()))
+                        .to(BlockVector3.at(ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x"),
+                                ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y"),
+                                ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")))
                         .ignoreAirBlocks(false)
                         .build();
 
 
                 Bukkit.broadcastMessage(UtilsRef.colorInfo("&cAttention ! \n&fUn portail vient d'apparaître en "
-                        + "x: &2" + DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockX()
-                        + " &fy: &2" + DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockY()
-                        + " &fz: &2" + DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockZ()));
+                        + "x: &2" + ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x")
+                        + " &fy: &2" + ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y")
+                        + " &fz: &2" + ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")));
 
 
 
                 DonjonsMain.undoShematic.put(UtilsRef.principalWorld(), editSession);
                 Operations.complete(operation);
+
+                //Loading du monde
+                Bukkit.getServer().createWorld((new WorldCreator(DonjonsMain.worlds.get(0))));
 
 
                 /*
@@ -121,13 +131,13 @@ public class GenerationStructure {
                 e.printStackTrace();
             }
             Location loc1 = new Location(UtilsRef.principalWorld(),
-                    DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockX() + 4,
-                    DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockY() + 4,
-                    DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockZ() + 2);
+                    ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") + 4,
+                    ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") + 4,
+                    ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") + 2);
             Location loc2 = new Location(UtilsRef.principalWorld(),
-                    DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockX() + 3,
-                    DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockY() + 2,
-                    DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockZ() + 2);
+                    ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") + 3,
+                    ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") + 2,
+                    ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") + 2);
 
             Selection sel = new Selection();
             sel.selectedArea(loc1, loc2);
@@ -154,9 +164,9 @@ public class GenerationStructure {
 
                 Operation operation = new ClipboardHolder(clipboard)
                         .createPaste(editSession)
-                        .to(BlockVector3.at(ConfigManager.get().getInt("location.x"),
-                                ConfigManager.get().getInt("location.y"),
-                                ConfigManager.get().getInt("location.z")))
+                        .to(BlockVector3.at(ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).getInt("location.x"),
+                                ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).getInt("location.y"),
+                                ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).getInt("location.z")))
                         .ignoreAirBlocks(false)
                         .build();
 
@@ -278,7 +288,16 @@ public class GenerationStructure {
             randomLocation = randomTeleport(location);
         }
 
-        DonjonsMain.listPos.put(randomLocation.getWorld(), randomLocation);
+        ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.world", randomLocation.getWorld().getName());
+        ConfigMondes.save(UtilsRef.principalWorld().getName());
+        ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.x", randomLocation.getBlockX());
+        ConfigMondes.save(UtilsRef.principalWorld().getName());
+        ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.y", randomLocation.getBlockY());
+        ConfigMondes.save(UtilsRef.principalWorld().getName());
+        ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.z", randomLocation.getBlockZ());
+        ConfigMondes.save(UtilsRef.principalWorld().getName());
+
+
 
         return randomLocation;
     }

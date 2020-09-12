@@ -42,7 +42,7 @@ public class UtilsRef {
         return ChatColor.translateAlternateColorCodes('&', str);
     }
 
-    public static World randomWorlds(){
+    public static String randomWorlds(){
 
         List<String> listWorlds = new ArrayList<>();
 
@@ -50,7 +50,7 @@ public class UtilsRef {
             listWorlds.add(params);
         }
 
-        return Bukkit.getServer().getWorld(listWorlds.get(randomNumber(listWorlds.size())));
+        return listWorlds.get(randomNumber(listWorlds.size()));
 
     }
 

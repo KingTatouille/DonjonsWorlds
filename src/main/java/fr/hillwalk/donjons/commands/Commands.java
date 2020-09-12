@@ -1,25 +1,16 @@
 package fr.hillwalk.donjons.commands;
 
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.world.World;
 import fr.hillwalk.donjons.DonjonsMain;
-import fr.hillwalk.donjons.configs.ConfigManager;
-import fr.hillwalk.donjons.teleportation.GenerationSchematic;
-import fr.hillwalk.donjons.teleportation.GenerationStructure;
-import fr.hillwalk.donjons.teleportation.Selection;
+import fr.hillwalk.donjons.configs.ConfigInformations;
+import fr.hillwalk.donjons.configs.ConfigMondes;
 import fr.hillwalk.donjons.utils.UtilsRef;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 public class Commands implements CommandExecutor {
@@ -43,7 +34,7 @@ public class Commands implements CommandExecutor {
 
         if(args.length == 0){
 
-            if(DonjonsMain.listPos.isEmpty()){
+            if(ConfigInformations.getInfos().getBoolean("OpenPortail") == false){
 
                 player.sendMessage(UtilsRef.colorInfo(DonjonsMain.prefix + "Aucun donjon n'est apparu !"));
                 return true;
@@ -56,7 +47,7 @@ public class Commands implements CommandExecutor {
 
            if(args[1].equalsIgnoreCase("portail")){
 
-               if(DonjonsMain.listPos.isEmpty()){
+               if(ConfigInformations.getInfos().getBoolean("OpenPortail") == false){
 
                    if(!player.getWorld().getName().equalsIgnoreCase(DonjonsMain.worlds.get(0))){
 
@@ -72,9 +63,9 @@ public class Commands implements CommandExecutor {
                }
 
             player.sendMessage(UtilsRef.colorInfo(DonjonsMain.prefix + "Les coordonnées sont :\nx : &6" +
-                    DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockX() +
-                    " &fy : &6" + DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockY() +
-                    " &fz : &6" + DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockZ()));
+                    ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") +
+                    " &fy : &6" + ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") +
+                    " &fz : &6" + ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")));
             return true;
            }
 
@@ -111,8 +102,8 @@ public class Commands implements CommandExecutor {
             DonjonsMain.instance.reloadConfig();
 
             try {
-                ConfigManager.save();
-                ConfigManager.reload();
+                ConfigInformations.save();
+                ConfigInformations.reload();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }

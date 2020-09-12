@@ -2,25 +2,20 @@ package fr.hillwalk.donjons;
 
 import com.sk89q.worldedit.EditSession;
 import fr.hillwalk.donjons.commands.Commands;
-import fr.hillwalk.donjons.configs.ConfigManager;
+import fr.hillwalk.donjons.configs.ConfigInformations;
+import fr.hillwalk.donjons.configs.ConfigMondes;
 import fr.hillwalk.donjons.listener.MobDeathEvent;
 import fr.hillwalk.donjons.listener.NetherPortalTeleport;
-import fr.hillwalk.donjons.runnable.SchematicLoad;
 import fr.hillwalk.donjons.runnable.TimerLoad;
 import fr.hillwalk.donjons.teleportation.GenerationStructure;
 import fr.hillwalk.donjons.utils.UtilsRef;
-import io.lumine.xikage.mythicmobs.mobs.MythicMob;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Entity;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +25,6 @@ public class DonjonsMain extends JavaPlugin {
 
     public static DonjonsMain instance;
     public static String prefix;
-    public static HashMap<World, Location> listPos = new HashMap<World, Location>();
 
     public static HashMap<String, Location> mobSpawn = new HashMap<String, Location>();
     public static HashMap<World, EditSession> undoShematic = new HashMap<>();
@@ -58,7 +52,17 @@ public class DonjonsMain extends JavaPlugin {
 
         //Sauvegarde de la config informations
         saveResource("informations.yml", false);
-        ConfigManager.setup();
+        ConfigInformations.setup();
+
+        //Setup de la config des mondes
+        for (String str : getConfig().getStringList("worlds")){
+            ConfigMondes.setup(str);
+
+        }
+
+        //Setup du monde principal
+        ConfigMondes.setupPrincipalWorld(UtilsRef.principalWorld().getName());
+
 
         //Registre des commandes
         getCommand("randomdonjon").setExecutor(new Commands());
@@ -74,23 +78,22 @@ public class DonjonsMain extends JavaPlugin {
         //On invoque le timer
         load.runTaskTimer(this, getConfig().getLong("startTiming"), getConfig().getLong("repeatTiming"));
 
-        //On load la schematic
-
 
 
         //Si le serveur s'est éteint sans avoir complété le donjon
-        if(ConfigManager.get().getString("location") == null){
+        if(ConfigInformations.getInfos().getString("portail") == null){
             return;
 
         } else {
             GenerationStructure.pasteChem();
-            ConfigManager.get().set("location", null);
-            ConfigManager.get().set("location.x", null);
-            ConfigManager.get().set("location.y", null);
-            ConfigManager.get().set("location.z", null);
-            ConfigManager.get().set("OpenPortail", false);
-            ConfigManager.get().set("summonedBoss", null);
-            ConfigManager.save();
+            ConfigMondes.getMondes(worlds.get(0)).set("portail.location", null);
+            ConfigMondes.getMondes(worlds.get(0)).set("portail.location.world", null);
+            ConfigMondes.getMondes(worlds.get(0)).set("portail.location.x", null);
+            ConfigMondes.getMondes(worlds.get(0)).set("portail.location.y", null);
+            ConfigMondes.getMondes(worlds.get(0)).set("portail.location.z", null);
+            ConfigInformations.getInfos().set("OpenPortail", false);
+            ConfigInformations.getInfos().set("summonedBoss", null);
+            ConfigInformations.save();
         }
 
 
@@ -103,14 +106,6 @@ public class DonjonsMain extends JavaPlugin {
 
     @Override
     public void onDisable(){
-        
-        if(!listPos.isEmpty()){
-        ConfigManager.get().set("location.x", listPos.get(UtilsRef.principalWorld()).getBlockX());
-        ConfigManager.get().set("location.y", listPos.get(UtilsRef.principalWorld()).getBlockY());
-        ConfigManager.get().set("location.z", listPos.get(UtilsRef.principalWorld()).getBlockZ());
-        ConfigManager.save();
-        }
-
 
         getLogger().info("is unloaded!");
 

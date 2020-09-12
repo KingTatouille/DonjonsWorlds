@@ -1,10 +1,9 @@
 package fr.hillwalk.donjons.listener;
 
 import fr.hillwalk.donjons.DonjonsMain;
-import fr.hillwalk.donjons.configs.ConfigManager;
-import fr.hillwalk.donjons.teleportation.GenerationSchematic;
+import fr.hillwalk.donjons.configs.ConfigInformations;
+import fr.hillwalk.donjons.configs.ConfigMondes;
 import fr.hillwalk.donjons.teleportation.GenerationStructure;
-import fr.hillwalk.donjons.teleportation.Selection;
 import fr.hillwalk.donjons.utils.UtilsRef;
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.api.exceptions.InvalidMobTypeException;
@@ -12,11 +11,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -28,11 +25,7 @@ public class NetherPortalTeleport implements Listener {
 
         if(e.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL){
 
-           if(DonjonsMain.worlds.isEmpty()){
-               World world = UtilsRef.randomWorlds();
-               DonjonsMain.worlds.add(world.getName());
-           }
-
+            if(DonjonsMain.worlds.isEmpty())return;
 
            World world = Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0));
 
@@ -43,10 +36,11 @@ public class NetherPortalTeleport implements Listener {
                 return;
             }
 
-            if(UtilsRef.inCuboid(e.getPlayer().getLocation(), DonjonsMain.listPos.get(UtilsRef.principalWorld()), new Location(UtilsRef.principalWorld(),
-                    DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockX() + 5,
-                    DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockY() + 5,
-                    DonjonsMain.listPos.get(UtilsRef.principalWorld()).getBlockZ() + 5))) {
+
+            if(UtilsRef.inCuboid(e.getPlayer().getLocation(), new Location(UtilsRef.principalWorld(), ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x"), ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y"), ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")), new Location(UtilsRef.principalWorld(),
+                    ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") + 5,
+                    ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") + 5,
+                    ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") + 5))) {
 
                 try{
 
@@ -71,7 +65,7 @@ public class NetherPortalTeleport implements Listener {
 
     public void onSummonMob(){
 
-        if(ConfigManager.get().getBoolean("summonedBoss")){
+        if(ConfigInformations.getInfos().getBoolean("summonedBoss")){
 
             return;
 
@@ -103,8 +97,8 @@ public class NetherPortalTeleport implements Listener {
                 }
 
                 Bukkit.broadcastMessage(DonjonsMain.prefix + mobName + " vient d'apparaître en : " + "x: " + DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockX() + " y: " + DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockY() + " z: " + DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockZ());
-                ConfigManager.get().set("summonedBoss", true);
-                ConfigManager.save();
+                ConfigInformations.getInfos().set("summonedBoss", true);
+                ConfigInformations.save();
 
             }
         }, DonjonsMain.instance.getConfig().getLong("timing"));

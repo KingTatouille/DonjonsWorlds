@@ -1,13 +1,10 @@
 package fr.hillwalk.donjons.runnable;
 
 import fr.hillwalk.donjons.DonjonsMain;
-import fr.hillwalk.donjons.configs.ConfigManager;
-import fr.hillwalk.donjons.teleportation.GenerationStructure;
+import fr.hillwalk.donjons.configs.ConfigInformations;
 import fr.hillwalk.donjons.utils.UtilsRef;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class TimerLoad extends BukkitRunnable {
@@ -35,12 +32,13 @@ public class TimerLoad extends BukkitRunnable {
         }
 
 
-        if(!ConfigManager.get().getBoolean("OpenPortail")){
+        if(!ConfigInformations.getInfos().getBoolean("OpenPortail")){
             BukkitRunnable loadSchematic = new SchematicLoad();
             loadSchematic.runTaskLater(DonjonsMain.instance, DonjonsMain.instance.getConfig().getLong("timing"));
             Bukkit.broadcastMessage("Attention ! \nUn portail va apparaître dans : " + ChatColor.GOLD +  UtilsRef.timerMessage(DonjonsMain.instance.getConfig().getInt("durationSeconds")));
-            ConfigManager.get().set("OpenPortail", true);
-            ConfigManager.save();
+            ConfigInformations.getInfos().set("OpenPortail", true);
+            ConfigInformations.save();
+
         }
     }
 

@@ -1,7 +1,8 @@
 package fr.hillwalk.donjons.runnable;
 
 import fr.hillwalk.donjons.DonjonsMain;
-import fr.hillwalk.donjons.configs.ConfigManager;
+import fr.hillwalk.donjons.configs.ConfigInformations;
+import fr.hillwalk.donjons.configs.ConfigMondes;
 import fr.hillwalk.donjons.teleportation.GenerationStructure;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -42,6 +43,7 @@ public class EndDonjons extends BukkitRunnable {
                     player.sendMessage(DonjonsMain.prefix + "Le donjon est terminé ! Vous avez été téléporté au spawn !");
 
             }
+            unloadWorld();
             removeAll();
             this.cancel();
 
@@ -54,15 +56,14 @@ public class EndDonjons extends BukkitRunnable {
 
 
             GenerationStructure.pasteChem();
-            ConfigManager.get().set("location", null);
-            ConfigManager.get().set("location.x", null);
-            ConfigManager.get().set("location.y", null);
-            ConfigManager.get().set("location.z", null);
-            ConfigManager.get().set("OpenPortail", false);
-            ConfigManager.get().set("summonedBoss", null);
-            ConfigManager.save();
+            ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).set("location", null);
+            ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).set("location.x", null);
+            ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).set("location.y", null);
+            ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).set("location.z", null);
+            ConfigInformations.getInfos().set("OpenPortail", false);
+            ConfigInformations.getInfos().set("summonedBoss", null);
+            ConfigInformations.save();
 
-        DonjonsMain.listPos.clear();
         DonjonsMain.undoShematic.clear();
         DonjonsMain.mobs.clear();
         DonjonsMain.mobSpawn.clear();
@@ -70,6 +71,12 @@ public class EndDonjons extends BukkitRunnable {
         DonjonsMain.worlds.clear();
         DonjonsMain.mobLocation.clear();
 
+
+    }
+
+    private void unloadWorld(){
+
+        Bukkit.getServer().unloadWorld(DonjonsMain.worlds.get(0), false);
 
     }
 

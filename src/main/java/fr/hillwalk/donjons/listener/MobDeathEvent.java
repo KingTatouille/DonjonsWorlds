@@ -12,12 +12,9 @@ public class MobDeathEvent implements Listener {
     @EventHandler
     public void onMythicMobDeath(MythicMobDeathEvent e){
 
-        if(DonjonsMain.worlds.isEmpty())return;
-        System.out.println("Je suis en preimier");
+        if(DonjonsMain.worlds.isEmpty() || DonjonsMain.mobs.isEmpty())return;
         if(!e.getMob().getLocation().getWorld().getName().equalsIgnoreCase(DonjonsMain.worlds.get(0))) return;
-        System.out.println("Je suis en second");
         if(!e.getMob().getDisplayName().equalsIgnoreCase(DonjonsMain.mobs.get(0))) return;
-        System.out.println("Je suis en Third");
 
         BukkitRunnable task = new EndDonjons();
 
