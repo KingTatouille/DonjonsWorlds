@@ -4,14 +4,17 @@ import com.sk89q.worldedit.EditSession;
 import fr.hillwalk.donjons.commands.Commands;
 import fr.hillwalk.donjons.configs.ConfigInformations;
 import fr.hillwalk.donjons.configs.ConfigMondes;
+import fr.hillwalk.donjons.listener.HitEntity;
 import fr.hillwalk.donjons.listener.MobDeathEvent;
 import fr.hillwalk.donjons.listener.NetherPortalTeleport;
 import fr.hillwalk.donjons.runnable.TimerLoad;
 import fr.hillwalk.donjons.teleportation.GenerationStructure;
 import fr.hillwalk.donjons.utils.UtilsRef;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -27,12 +30,10 @@ public class DonjonsMain extends JavaPlugin {
     public static String prefix;
 
     public static HashMap<String, Location> mobSpawn = new HashMap<String, Location>();
-    public static HashMap<World, EditSession> undoShematic = new HashMap<>();
     public static HashMap<World, Location> mobLocation = new HashMap<World, Location>();
 
     public static List<String> worlds = new ArrayList<String>();
-    public static List<UUID> playerHits = new ArrayList<UUID>();
-    public static List<String> mobs = new ArrayList<String>();
+    public static List<String> playerHits = new ArrayList<String>();
 
 
     @Override
@@ -71,6 +72,7 @@ public class DonjonsMain extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new NetherPortalTeleport(), this);
         pm.registerEvents(new MobDeathEvent(), this);
+        pm.registerEvents(new HitEntity(), this);
 
         //Instanciation du prefix
         prefix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("prefix") + " ");
@@ -86,12 +88,13 @@ public class DonjonsMain extends JavaPlugin {
 
         } else {
             GenerationStructure.pasteChem();
-            ConfigMondes.getMondes(worlds.get(0)).set("portail.location", null);
-            ConfigMondes.getMondes(worlds.get(0)).set("portail.location.world", null);
-            ConfigMondes.getMondes(worlds.get(0)).set("portail.location.x", null);
-            ConfigMondes.getMondes(worlds.get(0)).set("portail.location.y", null);
-            ConfigMondes.getMondes(worlds.get(0)).set("portail.location.z", null);
+            ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location", null);
+            ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.world", null);
+            ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.x", null);
+            ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.y", null);
+            ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.z", null);
             ConfigInformations.getInfos().set("OpenPortail", false);
+            ConfigInformations.getInfos().set("DiscoverArea", false);
             ConfigInformations.getInfos().set("summonedBoss", null);
             ConfigInformations.save();
         }
@@ -106,6 +109,19 @@ public class DonjonsMain extends JavaPlugin {
 
     @Override
     public void onDisable(){
+
+        if(!worlds.isEmpty()){
+            Bukkit.getServer().unloadWorld(DonjonsMain.worlds.get(0), false);
+        } else {
+
+            for (String str : getConfig().getStringList("worlds")){
+                Bukkit.getServer().unloadWorld(str, false);
+            }
+            getLogger().info("Les mondes sont maintenant inutilisables.");
+
+        }
+
+
 
         getLogger().info("is unloaded!");
 

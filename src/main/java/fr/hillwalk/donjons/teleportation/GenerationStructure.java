@@ -13,15 +13,20 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.flags.Flags;
+import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import fr.hillwalk.donjons.DonjonsMain;
 import fr.hillwalk.donjons.configs.ConfigInformations;
 import fr.hillwalk.donjons.configs.ConfigMondes;
 import fr.hillwalk.donjons.utils.UtilsRef;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.WorldCreator;
+import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -111,9 +116,14 @@ public class GenerationStructure {
                         + " &fz: &2" + ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")));
 
 
-
-                DonjonsMain.undoShematic.put(UtilsRef.principalWorld(), editSession);
                 Operations.complete(operation);
+                for (Player player : Bukkit.getServer().getOnlinePlayers()){
+
+                    player.playSound(player.getLocation(), Sound.AMBIENT_CAVE, 1.0F, 1.0F);
+
+                }
+
+                createRegion();
 
                 //Loading du monde
                 Bukkit.getServer().createWorld((new WorldCreator(DonjonsMain.worlds.get(0))));
@@ -164,9 +174,9 @@ public class GenerationStructure {
 
                 Operation operation = new ClipboardHolder(clipboard)
                         .createPaste(editSession)
-                        .to(BlockVector3.at(ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).getInt("location.x"),
-                                ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).getInt("location.y"),
-                                ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).getInt("location.z")))
+                        .to(BlockVector3.at(ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x"),
+                                ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y"),
+                                ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")))
                         .ignoreAirBlocks(false)
                         .build();
 
@@ -335,5 +345,25 @@ public class GenerationStructure {
             return !(blockPrevent.contains(below.getType())) || (block.getType().isSolid()) || (above.getType().isSolid());
         }
     }
+
+    public void createRegion(){
+
+        BlockVector3 minimum = BlockVector3.at(ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x"), ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y"), ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z"));
+        BlockVector3 maximum = BlockVector3.at(ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") + 5, ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") + 256, ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") + 5);
+        ProtectedRegion region = new ProtectedCuboidRegion("portail", minimum, maximum);
+        region.setFlag(Flags.VINE_GROWTH, StateFlag.State.DENY);
+        region.setFlag(Flags.BUILD, StateFlag.State.DENY);
+        region.setFlag(Flags.PVP, StateFlag.State.DENY);
+        region.setFlag(Flags.TNT, StateFlag.State.DENY);
+        region.setFlag(Flags.CREEPER_EXPLOSION, StateFlag.State.DENY);
+        region.setFlag(Flags.OTHER_EXPLOSION, StateFlag.State.DENY);
+
+
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionManager regions = container.get(new BukkitWorld(UtilsRef.principalWorld()));
+        regions.addRegion(region);
+
+    }
+
 
 }

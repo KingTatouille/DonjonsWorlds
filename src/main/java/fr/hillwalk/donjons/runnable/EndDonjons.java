@@ -29,11 +29,11 @@ public class EndDonjons extends BukkitRunnable {
     @Override
     public void run() {
         if(number == 1) {
-            Bukkit.broadcastMessage(DonjonsMain.prefix + DonjonsMain.mobs.get(0) + ChatColor.WHITE + " vient de succomber à ses blessures !");
+            Bukkit.broadcastMessage(DonjonsMain.prefix + ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).getString("boss.name") + ChatColor.WHITE + " vient de succomber à ses blessures !");
         }
 
        for(Player player : Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)).getPlayers()){
-            player.sendTitle(ChatColor.GREEN + String.valueOf(number), null, 1, 5, 1);
+            player.sendTitle(ChatColor.GREEN + String.valueOf(number), null, 10, 40, 10);
        }
 
         if(number == 5){
@@ -43,6 +43,7 @@ public class EndDonjons extends BukkitRunnable {
                     player.sendMessage(DonjonsMain.prefix + "Le donjon est terminé ! Vous avez été téléporté au spawn !");
 
             }
+
             unloadWorld();
             removeAll();
             this.cancel();
@@ -56,16 +57,15 @@ public class EndDonjons extends BukkitRunnable {
 
 
             GenerationStructure.pasteChem();
-            ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).set("location", null);
-            ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).set("location.x", null);
-            ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).set("location.y", null);
-            ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).set("location.z", null);
+            ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location", null);
+            ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.x", null);
+            ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.y", null);
+            ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.z", null);
             ConfigInformations.getInfos().set("OpenPortail", false);
+            ConfigInformations.getInfos().set("DiscoverArea", null);
             ConfigInformations.getInfos().set("summonedBoss", null);
             ConfigInformations.save();
 
-        DonjonsMain.undoShematic.clear();
-        DonjonsMain.mobs.clear();
         DonjonsMain.mobSpawn.clear();
         DonjonsMain.playerHits.clear();
         DonjonsMain.worlds.clear();

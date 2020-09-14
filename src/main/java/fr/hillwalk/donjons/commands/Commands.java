@@ -73,7 +73,7 @@ public class Commands implements CommandExecutor {
 
                if(DonjonsMain.mobLocation.isEmpty()){
 
-                   if(!player.getWorld().getName().equalsIgnoreCase(DonjonsMain.worlds.get(0))){
+                   if(ConfigMondes.getMondes(player.getWorld().getName()).getString("boss.location.x") == null){
 
                        player.sendMessage(DonjonsMain.prefix + "Aucun boss n'est présent dans ce monde.");
                        return true;
@@ -87,9 +87,9 @@ public class Commands implements CommandExecutor {
                }
 
                player.sendMessage(UtilsRef.colorInfo(DonjonsMain.prefix + "Les dernières coordonnées du boss sont :\n" + "x : &6" +
-                       DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockX() +
-                       " &fy : &6" + DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockY()) +
-                       " &fz: &6" + DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockZ());
+                       ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).getInt("boss.location.x") +
+                       " &fy : &6" + ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).getInt("boss.location.y") +
+                       " &fz: &6" + ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).getInt("boss.location.z")));
 
                return true;
            }
@@ -102,8 +102,8 @@ public class Commands implements CommandExecutor {
             DonjonsMain.instance.reloadConfig();
 
             try {
-                ConfigInformations.save();
                 ConfigInformations.reload();
+                ConfigInformations.save();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }

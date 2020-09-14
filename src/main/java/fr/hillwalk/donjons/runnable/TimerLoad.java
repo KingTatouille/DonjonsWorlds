@@ -23,9 +23,12 @@ public class TimerLoad extends BukkitRunnable {
     @Override
     public void run() {
         if(Bukkit.getServer().getOnlinePlayers().isEmpty()){
-            if(UtilsRef.randomNumber(2) == 1){
-                DonjonsMain.instance.getLogger().info("No players online !");
+            if(!ConfigInformations.getInfos().getBoolean("OpenPortail")){
+                if(UtilsRef.randomNumber(2) == 1){
+                    DonjonsMain.instance.getLogger().info("No players online !");
+                }
             }
+
 
             return;
 

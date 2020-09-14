@@ -43,7 +43,7 @@ worlds:
   - test
 
 #Reverse is for material if you reverse you only need to say on what the portal can spawn.
-reverse: true
+reverse: false
 #Materials
 materials:
   - GRASS_BLOCK

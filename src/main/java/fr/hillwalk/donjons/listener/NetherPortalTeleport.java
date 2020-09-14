@@ -17,6 +17,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import java.io.UnsupportedEncodingException;
+
 public class NetherPortalTeleport implements Listener {
 
 
@@ -47,7 +49,14 @@ public class NetherPortalTeleport implements Listener {
 
                     e.setTo(new Location(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)), world.getSpawnLocation().getBlockX() ,world.getSpawnLocation().getBlockY() ,world.getSpawnLocation().getBlockZ()));
                     e.getPlayer().sendMessage(DonjonsMain.instance.prefix + "Vous venez d'être téléporté dans le monde : " + world.getName());
-                    onSummonMob();
+
+                    if(!ConfigInformations.getInfos().getBoolean("discoverArea")){
+                        onSummonMob();
+                        ConfigInformations.getInfos().set("discoverArea", true);
+                    } else {
+                        return;
+                    }
+
 
                 } catch (NullPointerException ex){
                     ex.getStackTrace();
@@ -88,10 +97,16 @@ public class NetherPortalTeleport implements Listener {
 
                 try {
                     Entity entity = MythicMobs.inst().getAPIHelper().spawnMythicMob(mobName, DonjonsMain.mobSpawn.get(mobName));
-                    System.out.println(DonjonsMain.worlds.get(0));
                     DonjonsMain.mobLocation.put(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)), entity.getLocation());
 
-                    DonjonsMain.mobs.add(UtilsRef.colorInfo(entity.getName()));
+                    ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.name", UtilsRef.colorInfo(entity.getName()));
+                    ConfigMondes.save(DonjonsMain.worlds.get(0));
+                    ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.x", entity.getLocation().getBlockX());
+                    ConfigMondes.save(DonjonsMain.worlds.get(0));
+                    ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.y", entity.getLocation().getBlockY());
+                    ConfigMondes.save(DonjonsMain.worlds.get(0));
+                    ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.z", entity.getLocation().getBlockZ());
+                    ConfigMondes.save(DonjonsMain.worlds.get(0));
                 } catch (InvalidMobTypeException e) {
                     e.printStackTrace();
                 }

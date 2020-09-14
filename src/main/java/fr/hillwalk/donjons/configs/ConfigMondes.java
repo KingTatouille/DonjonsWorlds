@@ -106,15 +106,11 @@ public class ConfigMondes {
         }
     }
 
-    public static void reload() throws UnsupportedEncodingException {
+    public static void reload(String str) throws UnsupportedEncodingException {
         if (mondesFiles == null) {
 
-            for(String str : DonjonsMain.instance.getConfig().getStringList("worlds")){
-
                 mondesFiles = new File(mondesFilesIn, str+".yml");
-                System.out.println(mondesFiles);
 
-            }
         }
         mondes = YamlConfiguration.loadConfiguration(mondesFiles);
 
