@@ -30,8 +30,29 @@ timing: 600
 #duration in seconds / timing = durationSecons so 600 ticks = 30 seconds
 durationSeconds: 30
 
-#Support MythicMobs
-mythicMobs: true
+#Let's make sure that the messages can have several different types!
+spawnBoss:
+  method: TITLE
+  #For TITLE
+  customTitle: "&c&lWARNING"
+  customSubTitle: "&6&l%mob_name% &7&l>> &rx: &6%mob_location_X% &fy: &6%mob_location_Y% &fz: &6%mob_location_Z%"
+  fadeIn: 5
+  stay: 30
+  fadeOut: 5
+  #For BROADCAST
+  customMessage: "%mob_name% appear at x: &6%mob_location_X% y: &6%mob_location_Y% z: &6%mob_location_Z%"
+
+spawnPortal:
+  method: BROADCAST
+  #For TITLE
+  customTitle: "&c&lWARNING"
+  customSubTitle: "Portal &7&l>> &rx: &6%portal_location_X% &fy: &6%portal_location_Y% &fz: &6%portal_location_Z%"
+  fadeIn: 5
+  stay: 30
+  fadeOut: 5
+  #For BROADCAST
+  customMessage: "A portal appeared in x: &6%portal_location_X% y: &6%portal_location_Y% z: &6%portal_location_Z%"
+
 
 #Invok the boss
 summonBoss:
@@ -43,7 +64,7 @@ worlds:
   - test
 
 #Reverse is for material if you reverse you only need to say on what the portal can spawn.
-reverse: false
+reverse: true
 #Materials
 materials:
   - GRASS_BLOCK

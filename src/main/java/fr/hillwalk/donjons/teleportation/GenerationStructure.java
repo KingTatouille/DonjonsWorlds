@@ -27,6 +27,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import javax.rmi.CORBA.Util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -58,7 +59,7 @@ public class GenerationStructure {
             Location location = findSafeLocation(Bukkit.getServer().getWorld(UtilsRef.principalWorld().getName()).getSpawnLocation());
         } catch(NullPointerException ex){
             ex.getStackTrace();
-            DonjonsMain.instance.getLogger().info("Le nom du monde n'est pas correcte, regardez la config.");
+            DonjonsMain.instance.getLogger().warning("The name of this world: " + UtilsRef.principalWorld().getName() + " have a problem...");
         }
 
 
@@ -66,7 +67,7 @@ public class GenerationStructure {
 
         if(!schematic.exists()){
 
-            DonjonsMain.instance.getLogger().info("The schematic doesn't not exist.");
+            DonjonsMain.instance.getLogger().warning("The schematic doesn't not exist.");
 
             return;
         }
@@ -79,12 +80,12 @@ public class GenerationStructure {
 
         World world = new BukkitWorld(UtilsRef.principalWorld());
 
-        BlockVector3 min = BlockVector3.at(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x"),
+        BlockVector3 min = BlockVector3.at(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") - 1,
                 Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y"),
-                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z"));
+                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") + 1);
         BlockVector3 max = BlockVector3.at(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") + 7,
                 Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") + 256,
-                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") - 5);
+                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") - 7);
 
         GenerationSchematic.copy(world, min, max);
 
@@ -109,10 +110,58 @@ public class GenerationStructure {
                         .build();
 
 
-                Bukkit.broadcastMessage(UtilsRef.colorInfo("&cAttention ! \n&fUn portail vient d'apparaître en "
-                        + "x: &2" + Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x")
-                        + " &fy: &2" + Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y")
-                        + " &fz: &2" + Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")));
+                switch (DonjonsMain.instance.getConfig().getString("spawnPortal.method")){
+                    case "TITLE":
+
+                        String title = UtilsRef.colorInfo(DonjonsMain.instance.getConfig().getString("spawnPortal.customTitle"));
+                        String repalceTitle = title.replaceAll("%portal_location_X%", String.valueOf(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x")))
+                                .replaceAll("%portal_location_Y%", String.valueOf(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y")))
+                                .replaceAll("%portal_location_Z%", String.valueOf(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")));
+
+
+                        if(DonjonsMain.instance.getConfig().getString("spawnPortal.customSubTitle") == "NULL") {
+
+                            for(Player player : Bukkit.getServer().getOnlinePlayers()){
+
+                                player.sendTitle(repalceTitle, null, DonjonsMain.instance.getConfig().getInt("spawnPortal.fadeIn"),
+                                        DonjonsMain.instance.getConfig().getInt("spawnPortal.stay"),
+                                        DonjonsMain.instance.getConfig().getInt("spawnPortal.fadeOut"));
+
+                            }
+
+                        } else {
+
+                            String subTitle = UtilsRef.colorInfo(DonjonsMain.instance.getConfig().getString("spawnPortal.customSubTitle"));
+                            String replaceSubTitle = subTitle.replaceAll("%portal_location_X%", String.valueOf(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x")))
+                                    .replaceAll("%portal_location_Y%", String.valueOf(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y")))
+                                    .replaceAll("%portal_location_Z%", String.valueOf(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")));
+
+                            for(Player player : Bukkit.getServer().getOnlinePlayers()){
+
+                                player.sendTitle(repalceTitle, replaceSubTitle,DonjonsMain.instance.getConfig().getInt("spawnBoss.fadeIn"),
+                                        DonjonsMain.instance.getConfig().getInt("spawnBoss.stay"),
+                                        DonjonsMain.instance.getConfig().getInt("spawnBoss.fadeOut"));
+
+                            }
+
+                        }
+
+
+                        break;
+
+                    case "BROADCAST" :
+
+                        String messageBroadcast = DonjonsMain.instance.getConfig().getString("spawnPortal.customMessage");
+                        String replacemessageBroadcast = messageBroadcast.replaceAll("%portal_location_X%", String.valueOf(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x")))
+                                .replaceAll("%portal_location_Y%", String.valueOf(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y")))
+                                .replaceAll("%portal_location_Z%", String.valueOf(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")));
+
+
+                        Bukkit.broadcastMessage(UtilsRef.colorInfo(replacemessageBroadcast));
+                        break;
+
+
+                }
 
 
                 Operations.complete(operation);
@@ -173,9 +222,9 @@ public class GenerationStructure {
 
                 Operation operation = new ClipboardHolder(clipboard)
                         .createPaste(editSession)
-                        .to(BlockVector3.at(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x"),
+                        .to(BlockVector3.at(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") - 1,
                                 Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y"),
-                                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")))
+                                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") + 1))
                         .ignoreAirBlocks(false)
                         .build();
 

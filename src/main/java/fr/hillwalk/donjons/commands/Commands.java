@@ -2,6 +2,7 @@ package fr.hillwalk.donjons.commands;
 
 import fr.hillwalk.donjons.DonjonsMain;
 import fr.hillwalk.donjons.configs.Informations;
+import fr.hillwalk.donjons.configs.Messages;
 import fr.hillwalk.donjons.configs.Mondes;
 import fr.hillwalk.donjons.utils.UtilsRef;
 import org.bukkit.ChatColor;
@@ -44,27 +45,31 @@ public class Commands implements CommandExecutor {
 
         if(args[0].equalsIgnoreCase("pos")){
 
-           if(args[1].equalsIgnoreCase("portail")){
+           if(args[1].equalsIgnoreCase("portal")){
 
                if(Informations.getInfos().getBoolean("OpenPortail") == false){
 
                    if(!player.getWorld().getName().equalsIgnoreCase(DonjonsMain.worlds.get(0))){
 
-                    player.sendMessage(DonjonsMain.prefix + "Aucun portail n'est présent dans ce monde.");
+                    player.sendMessage(DonjonsMain.prefix + UtilsRef.colorInfo(Messages.getMessages().getString("worlds.noPortal")));
                     return true;
                    } else {
 
-                       player.sendMessage(DonjonsMain.prefix + "Vous êtes dans un monde où cet événement ne peut se produire.");
+                       player.sendMessage(DonjonsMain.prefix + UtilsRef.colorInfo(Messages.getMessages().getString("worlds.notGoodWorld")));
 
                    }
                    return true;
 
                }
 
-            player.sendMessage(UtilsRef.colorInfo(DonjonsMain.prefix + "Les coordonnées sont :\nx : &6" +
-                    Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") +
-                    " &fy : &6" + Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") +
-                    " &fz : &6" + Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")));
+               String portal = UtilsRef.colorInfo(Messages.getMessages().getString("commands.portal"));
+               String replace = portal.replaceAll("%portal_location_X%", String.valueOf(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x")))
+                       .replaceAll("%portal_location_Y%", String.valueOf(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y")))
+                       .replaceAll("%portal_location_Z%", String.valueOf(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")));
+
+
+             //We send the message to the player
+            player.sendMessage(replace);
             return true;
            }
 
@@ -74,21 +79,25 @@ public class Commands implements CommandExecutor {
 
                    if(Mondes.getMondes(player.getWorld().getName()).getString("boss.location.x") == null){
 
-                       player.sendMessage(DonjonsMain.prefix + "Aucun boss n'est présent dans ce monde.");
+                       player.sendMessage(DonjonsMain.prefix + UtilsRef.colorInfo(Messages.getMessages().getString("worlds.noBoss")));
                        return true;
                    } else {
 
-                       player.sendMessage(DonjonsMain.prefix + "Vous êtes dans un monde où cet événement ne peut se produire.");
+                       player.sendMessage(DonjonsMain.prefix + UtilsRef.colorInfo(Messages.getMessages().getString("worlds.notGoodWorld")));
 
                    }
                 return true;
 
                }
 
-               player.sendMessage(UtilsRef.colorInfo(DonjonsMain.prefix + "Les dernières coordonnées du boss sont :\n" + "x : &6" +
-                       Mondes.getMondes(DonjonsMain.worlds.get(0)).getInt("boss.location.x") +
-                       " &fy : &6" + Mondes.getMondes(DonjonsMain.worlds.get(0)).getInt("boss.location.y") +
-                       " &fz: &6" + Mondes.getMondes(DonjonsMain.worlds.get(0)).getInt("boss.location.z")));
+               String boss = UtilsRef.colorInfo(Messages.getMessages().getString("commands.boss"));
+               String replace = boss.replaceAll("%boss_location_X%", String.valueOf(Mondes.getMondes(DonjonsMain.worlds.get(0)).getInt("boss.location.x")))
+                       .replaceAll("%boss_location_Y%", String.valueOf(Mondes.getMondes(DonjonsMain.worlds.get(0)).getInt("boss.location.y")))
+                       .replaceAll("%boss_location_Z%", String.valueOf(Mondes.getMondes(DonjonsMain.worlds.get(0)).getInt("boss.location.z")));
+
+
+               //We send a message to the player
+               player.sendMessage(replace);
 
                return true;
            }
@@ -97,6 +106,11 @@ public class Commands implements CommandExecutor {
 
         if(args[0].equalsIgnoreCase("reload")){
 
+            if(!player.isOp() || !player.hasPermission("randomdungeons.reload") || !player.hasPermission("randomdungeons.admin")){
+                player.sendMessage(UtilsRef.colorInfo(Messages.getMessages().getString("errors.reload")));
+                return true;
+            }
+            
             DonjonsMain.instance.saveDefaultConfig();
             DonjonsMain.instance.reloadConfig();
 
@@ -107,10 +121,12 @@ public class Commands implements CommandExecutor {
                 e.printStackTrace();
             }
 
+            UtilsRef.reset();
+
 
             DonjonsMain.prefix = ChatColor.translateAlternateColorCodes('&', DonjonsMain.instance.getConfig().getString("prefix") + " ");
 
-            player.sendMessage(DonjonsMain.prefix + ChatColor.GREEN + " reload effectué !");
+            player.sendMessage(DonjonsMain.prefix + UtilsRef.colorInfo(Messages.getMessages().getString("admin.reload")));
 
             return true;
         }

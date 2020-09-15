@@ -1,6 +1,10 @@
 package fr.hillwalk.donjons.utils;
 
 import fr.hillwalk.donjons.DonjonsMain;
+import fr.hillwalk.donjons.configs.Informations;
+import fr.hillwalk.donjons.configs.Messages;
+import fr.hillwalk.donjons.configs.Mondes;
+import fr.hillwalk.donjons.teleportation.GenerationStructure;
 import org.apache.commons.lang.math.IntRange;
 import org.bukkit.*;
 import org.bukkit.configuration.Configuration;
@@ -75,15 +79,15 @@ public class UtilsRef {
                 - TimeUnit.HOURS.toSeconds(hours) - TimeUnit.DAYS.toSeconds(days));
 
         if (days != 0) {
-            return days + "jours " + hours + "heures " + minutes + "minutes " + seconds + "secondes";
+            return days + Messages.getMessages().getString("schedule.days") + " " + hours + Messages.getMessages().getString("schedule.hours") + " " + minutes + Messages.getMessages().getString("schedule.minutes") + " " + seconds + Messages.getMessages().getString("schedule.seconds");
         } else {
             if (hours != 0) {
-                return hours + "heures " + minutes + "minutes " + seconds + "secondes";
+                return hours + Messages.getMessages().getString("schedule.hours")+ " " + minutes + Messages.getMessages().getString("schedule.minutes")+ " " + seconds + Messages.getMessages().getString("schedule.seconds");
             } else {
                 if (minutes != 0) {
-                    return minutes + "minutes " + seconds + "secondes";
+                    return minutes + Messages.getMessages().getString("schedule.minutes")+ " " + seconds + Messages.getMessages().getString("schedule.seconds");
                 } else {
-                    return seconds + " secondes";
+                    return seconds + " " + Messages.getMessages().getString("schedule.seconds");
                 }
             }
 
@@ -97,6 +101,22 @@ public class UtilsRef {
                 &&  new IntRange(l1.getZ(), l2.getZ()).containsDouble(origin.getZ());
     }
 
+
+
+    public static void reset(){
+
+        GenerationStructure.pasteChem();
+        Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location", null);
+        Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.world", null);
+        Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.x", null);
+        Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.y", null);
+        Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.z", null);
+        Informations.getInfos().set("OpenPortail", false);
+        Informations.getInfos().set("DiscoverArea", false);
+        Informations.getInfos().set("summonedBoss", null);
+        Informations.save();
+
+    }
 
 
 }

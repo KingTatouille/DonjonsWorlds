@@ -1,2 +1,17 @@
 worlds:
   disabled: "Worlds are disabled"
+  noPortal: "No portal is present in this world."
+  noBoss: "No boss is present in this world."
+  notGoodWorld: "You are in a world where this event is not going to happen."
+commands:
+  portal: "The coordinates are in: x: &6%portal_location_X% &fy: &6%portal_location_Y% &fz: &6%portal_location_Z%"
+  boss: "The boss coordinates are in: x: &6%boss_location_X% &fy: &6%boss_location_Y% &fz: &6%boss_location_Z%"
+errors:
+  noPermissions: "&cSorry but you don't have the permission to do that."
+schedule:
+  days: "days"
+  hours: "hours"
+  minutes: "minutes"
+  seconds: "seconds"
+admin:
+  reload: "&2Success reload !"

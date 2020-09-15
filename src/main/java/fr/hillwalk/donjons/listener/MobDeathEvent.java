@@ -24,7 +24,7 @@ public class MobDeathEvent implements Listener {
 
         if(DonjonsMain.worlds.isEmpty())return;
         if(!e.getMob().getLocation().getWorld().getName().equalsIgnoreCase(DonjonsMain.worlds.get(0))) return;
-        if(!e.getMob().getDisplayName().contains(Mondes.getMondes(DonjonsMain.worlds.get(0)).getString("boss.name").toUpperCase())) return;
+        if(!e.getMob().getDisplayName().contains(Mondes.getMondes(DonjonsMain.worlds.get(0)).getString("boss.name"))) return;
 
         BukkitRunnable task = new EndDonjons();
 

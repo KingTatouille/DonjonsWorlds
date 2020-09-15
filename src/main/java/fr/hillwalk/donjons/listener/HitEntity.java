@@ -17,7 +17,7 @@ public class HitEntity implements Listener {
         if(DonjonsMain.worlds.isEmpty())return;
         if(!e.getEntity().getLocation().getWorld().getName().equalsIgnoreCase(DonjonsMain.worlds.get(0))) return;
 
-        if(e.getEntity().getName().contains(Mondes.getMondes(DonjonsMain.worlds.get(0)).getString("boss.name").toUpperCase())){
+        if(e.getEntity().getName().contains(Mondes.getMondes(DonjonsMain.worlds.get(0)).getString("boss.name"))){
                 for(Entity entity : e.getEntity().getNearbyEntities(20, 20, 20)){
 
                     for (Player player : Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)).getPlayers()){

@@ -17,7 +17,6 @@ import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import sun.plugin2.message.Message;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,16 +90,7 @@ public class DonjonsMain extends JavaPlugin {
             return;
 
         } else {
-            GenerationStructure.pasteChem();
-            Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location", null);
-            Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.world", null);
-            Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.x", null);
-            Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.y", null);
-            Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.z", null);
-            Informations.getInfos().set("OpenPortail", false);
-            Informations.getInfos().set("DiscoverArea", false);
-            Informations.getInfos().set("summonedBoss", null);
-            Informations.save();
+            UtilsRef.reset();
         }
 
 
