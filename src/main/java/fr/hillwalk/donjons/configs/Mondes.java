@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-public class ConfigMondes {
+public class Mondes {
 
 
     private static File mondesFiles;

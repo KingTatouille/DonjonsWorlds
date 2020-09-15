@@ -1,8 +1,8 @@
 package fr.hillwalk.donjons.runnable;
 
 import fr.hillwalk.donjons.DonjonsMain;
-import fr.hillwalk.donjons.configs.ConfigInformations;
-import fr.hillwalk.donjons.configs.ConfigMondes;
+import fr.hillwalk.donjons.configs.Informations;
+import fr.hillwalk.donjons.configs.Mondes;
 import fr.hillwalk.donjons.teleportation.GenerationStructure;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -29,7 +29,7 @@ public class EndDonjons extends BukkitRunnable {
     @Override
     public void run() {
         if(number == 1) {
-            Bukkit.broadcastMessage(DonjonsMain.prefix + ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).getString("boss.name") + ChatColor.WHITE + " vient de succomber à ses blessures !");
+            Bukkit.broadcastMessage(DonjonsMain.prefix + Mondes.getMondes(DonjonsMain.worlds.get(0)).getString("boss.name") + ChatColor.WHITE + " vient de succomber à ses blessures !");
         }
 
        for(Player player : Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)).getPlayers()){
@@ -57,14 +57,14 @@ public class EndDonjons extends BukkitRunnable {
 
 
             GenerationStructure.pasteChem();
-            ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location", null);
-            ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.x", null);
-            ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.y", null);
-            ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.z", null);
-            ConfigInformations.getInfos().set("OpenPortail", false);
-            ConfigInformations.getInfos().set("DiscoverArea", null);
-            ConfigInformations.getInfos().set("summonedBoss", null);
-            ConfigInformations.save();
+            Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location", null);
+            Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.x", null);
+            Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.y", null);
+            Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.z", null);
+            Informations.getInfos().set("OpenPortail", false);
+            Informations.getInfos().set("DiscoverArea", null);
+            Informations.getInfos().set("summonedBoss", null);
+            Informations.save();
 
         DonjonsMain.mobSpawn.clear();
         DonjonsMain.playerHits.clear();

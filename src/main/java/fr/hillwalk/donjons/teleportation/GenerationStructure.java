@@ -21,8 +21,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import fr.hillwalk.donjons.DonjonsMain;
-import fr.hillwalk.donjons.configs.ConfigInformations;
-import fr.hillwalk.donjons.configs.ConfigMondes;
+import fr.hillwalk.donjons.configs.Mondes;
 import fr.hillwalk.donjons.utils.UtilsRef;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -38,7 +37,7 @@ import java.util.Random;
 public class GenerationStructure {
 
 
-    public HashSet<Material> blockPrevent = new HashSet<>();
+    public HashSet<Material> blockPrevent = new HashSet<Material>();
 
     {
         for(String block : DonjonsMain.instance.getConfig().getStringList("materials")){
@@ -80,12 +79,12 @@ public class GenerationStructure {
 
         World world = new BukkitWorld(UtilsRef.principalWorld());
 
-        BlockVector3 min = BlockVector3.at(ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x"),
-                ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y"),
-                ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z"));
-        BlockVector3 max = BlockVector3.at(ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") + 7,
-                ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") + 256,
-                ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") - 5);
+        BlockVector3 min = BlockVector3.at(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x"),
+                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y"),
+                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z"));
+        BlockVector3 max = BlockVector3.at(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") + 7,
+                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") + 256,
+                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") - 5);
 
         GenerationSchematic.copy(world, min, max);
 
@@ -103,17 +102,17 @@ public class GenerationStructure {
 
                 Operation operation = new ClipboardHolder(clipboard)
                         .createPaste(editSession)
-                        .to(BlockVector3.at(ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x"),
-                                ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y"),
-                                ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")))
+                        .to(BlockVector3.at(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x"),
+                                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y"),
+                                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")))
                         .ignoreAirBlocks(false)
                         .build();
 
 
                 Bukkit.broadcastMessage(UtilsRef.colorInfo("&cAttention ! \n&fUn portail vient d'apparaître en "
-                        + "x: &2" + ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x")
-                        + " &fy: &2" + ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y")
-                        + " &fz: &2" + ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")));
+                        + "x: &2" + Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x")
+                        + " &fy: &2" + Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y")
+                        + " &fz: &2" + Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")));
 
 
                 Operations.complete(operation);
@@ -141,13 +140,13 @@ public class GenerationStructure {
                 e.printStackTrace();
             }
             Location loc1 = new Location(UtilsRef.principalWorld(),
-                    ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") + 4,
-                    ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") + 4,
-                    ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") + 2);
+                    Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") + 4,
+                    Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") + 4,
+                    Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") + 2);
             Location loc2 = new Location(UtilsRef.principalWorld(),
-                    ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") + 3,
-                    ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") + 2,
-                    ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") + 2);
+                    Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") + 3,
+                    Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") + 2,
+                    Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") + 2);
 
             Selection sel = new Selection();
             sel.selectedArea(loc1, loc2);
@@ -174,9 +173,9 @@ public class GenerationStructure {
 
                 Operation operation = new ClipboardHolder(clipboard)
                         .createPaste(editSession)
-                        .to(BlockVector3.at(ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x"),
-                                ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y"),
-                                ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")))
+                        .to(BlockVector3.at(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x"),
+                                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y"),
+                                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")))
                         .ignoreAirBlocks(false)
                         .build();
 
@@ -298,14 +297,14 @@ public class GenerationStructure {
             randomLocation = randomTeleport(location);
         }
 
-        ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.world", randomLocation.getWorld().getName());
-        ConfigMondes.save(UtilsRef.principalWorld().getName());
-        ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.x", randomLocation.getBlockX());
-        ConfigMondes.save(UtilsRef.principalWorld().getName());
-        ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.y", randomLocation.getBlockY());
-        ConfigMondes.save(UtilsRef.principalWorld().getName());
-        ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.z", randomLocation.getBlockZ());
-        ConfigMondes.save(UtilsRef.principalWorld().getName());
+        Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.world", randomLocation.getWorld().getName());
+        Mondes.save(UtilsRef.principalWorld().getName());
+        Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.x", randomLocation.getBlockX());
+        Mondes.save(UtilsRef.principalWorld().getName());
+        Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.y", randomLocation.getBlockY());
+        Mondes.save(UtilsRef.principalWorld().getName());
+        Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.z", randomLocation.getBlockZ());
+        Mondes.save(UtilsRef.principalWorld().getName());
 
 
 
@@ -348,8 +347,8 @@ public class GenerationStructure {
 
     public void createRegion(){
 
-        BlockVector3 minimum = BlockVector3.at(ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x"), ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y"), ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z"));
-        BlockVector3 maximum = BlockVector3.at(ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") + 5, ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") + 256, ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") + 5);
+        BlockVector3 minimum = BlockVector3.at(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x"), Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y"), Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z"));
+        BlockVector3 maximum = BlockVector3.at(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") + 5, Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") + 256, Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") + 5);
         ProtectedRegion region = new ProtectedCuboidRegion("portail", minimum, maximum);
         region.setFlag(Flags.VINE_GROWTH, StateFlag.State.DENY);
         region.setFlag(Flags.BUILD, StateFlag.State.DENY);

@@ -1,13 +1,14 @@
 package fr.hillwalk.donjons.listener;
 
 import fr.hillwalk.donjons.DonjonsMain;
-import fr.hillwalk.donjons.configs.ConfigInformations;
-import fr.hillwalk.donjons.configs.ConfigMondes;
+import fr.hillwalk.donjons.configs.Informations;
+import fr.hillwalk.donjons.configs.Mondes;
 import fr.hillwalk.donjons.teleportation.GenerationStructure;
 import fr.hillwalk.donjons.utils.UtilsRef;
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.api.exceptions.InvalidMobTypeException;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -16,8 +17,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitScheduler;
-
-import java.io.UnsupportedEncodingException;
 
 public class NetherPortalTeleport implements Listener {
 
@@ -39,10 +38,10 @@ public class NetherPortalTeleport implements Listener {
             }
 
 
-            if(UtilsRef.inCuboid(e.getPlayer().getLocation(), new Location(UtilsRef.principalWorld(), ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x"), ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y"), ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")), new Location(UtilsRef.principalWorld(),
-                    ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") + 5,
-                    ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") + 5,
-                    ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") + 5))) {
+            if(UtilsRef.inCuboid(e.getPlayer().getLocation(), new Location(UtilsRef.principalWorld(), Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x"), Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y"), Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")), new Location(UtilsRef.principalWorld(),
+                    Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") + 5,
+                    Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") + 5,
+                    Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") + 5))) {
 
                 try{
 
@@ -50,9 +49,9 @@ public class NetherPortalTeleport implements Listener {
                     e.setTo(new Location(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)), world.getSpawnLocation().getBlockX() ,world.getSpawnLocation().getBlockY() ,world.getSpawnLocation().getBlockZ()));
                     e.getPlayer().sendMessage(DonjonsMain.instance.prefix + "Vous venez d'être téléporté dans le monde : " + world.getName());
 
-                    if(!ConfigInformations.getInfos().getBoolean("discoverArea")){
+                    if(!Informations.getInfos().getBoolean("discoverArea")){
                         onSummonMob();
-                        ConfigInformations.getInfos().set("discoverArea", true);
+                        Informations.getInfos().set("discoverArea", true);
                     } else {
                         return;
                     }
@@ -74,7 +73,7 @@ public class NetherPortalTeleport implements Listener {
 
     public void onSummonMob(){
 
-        if(ConfigInformations.getInfos().getBoolean("summonedBoss")){
+        if(Informations.getInfos().getBoolean("summonedBoss")){
 
             return;
 
@@ -99,21 +98,21 @@ public class NetherPortalTeleport implements Listener {
                     Entity entity = MythicMobs.inst().getAPIHelper().spawnMythicMob(mobName, DonjonsMain.mobSpawn.get(mobName));
                     DonjonsMain.mobLocation.put(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)), entity.getLocation());
 
-                    ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.name", UtilsRef.colorInfo(entity.getName()));
-                    ConfigMondes.save(DonjonsMain.worlds.get(0));
-                    ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.x", entity.getLocation().getBlockX());
-                    ConfigMondes.save(DonjonsMain.worlds.get(0));
-                    ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.y", entity.getLocation().getBlockY());
-                    ConfigMondes.save(DonjonsMain.worlds.get(0));
-                    ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.z", entity.getLocation().getBlockZ());
-                    ConfigMondes.save(DonjonsMain.worlds.get(0));
+                    Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.name", UtilsRef.colorInfo(entity.getName()));
+                    Mondes.save(DonjonsMain.worlds.get(0));
+                    Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.x", entity.getLocation().getBlockX());
+                    Mondes.save(DonjonsMain.worlds.get(0));
+                    Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.y", entity.getLocation().getBlockY());
+                    Mondes.save(DonjonsMain.worlds.get(0));
+                    Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.z", entity.getLocation().getBlockZ());
+                    Mondes.save(DonjonsMain.worlds.get(0));
                 } catch (InvalidMobTypeException e) {
                     e.printStackTrace();
                 }
 
-                Bukkit.broadcastMessage(DonjonsMain.prefix + mobName + " vient d'apparaître en : " + "x: " + DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockX() + " y: " + DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockY() + " z: " + DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockZ());
-                ConfigInformations.getInfos().set("summonedBoss", true);
-                ConfigInformations.save();
+                Bukkit.broadcastMessage(DonjonsMain.prefix + ChatColor.GOLD + mobName.toUpperCase() + ChatColor.WHITE + " vient d'apparaître en : " + "x: " + DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockX() + " y: " + DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockY() + " z: " + DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockZ());
+                Informations.getInfos().set("summonedBoss", true);
+                Informations.save();
 
             }
         }, DonjonsMain.instance.getConfig().getLong("timing"));

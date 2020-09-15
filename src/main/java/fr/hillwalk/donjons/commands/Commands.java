@@ -1,10 +1,9 @@
 package fr.hillwalk.donjons.commands;
 
 import fr.hillwalk.donjons.DonjonsMain;
-import fr.hillwalk.donjons.configs.ConfigInformations;
-import fr.hillwalk.donjons.configs.ConfigMondes;
+import fr.hillwalk.donjons.configs.Informations;
+import fr.hillwalk.donjons.configs.Mondes;
 import fr.hillwalk.donjons.utils.UtilsRef;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -34,7 +33,7 @@ public class Commands implements CommandExecutor {
 
         if(args.length == 0){
 
-            if(ConfigInformations.getInfos().getBoolean("OpenPortail") == false){
+            if(Informations.getInfos().getBoolean("OpenPortail") == false){
 
                 player.sendMessage(UtilsRef.colorInfo(DonjonsMain.prefix + "Aucun donjon n'est apparu !"));
                 return true;
@@ -47,7 +46,7 @@ public class Commands implements CommandExecutor {
 
            if(args[1].equalsIgnoreCase("portail")){
 
-               if(ConfigInformations.getInfos().getBoolean("OpenPortail") == false){
+               if(Informations.getInfos().getBoolean("OpenPortail") == false){
 
                    if(!player.getWorld().getName().equalsIgnoreCase(DonjonsMain.worlds.get(0))){
 
@@ -63,9 +62,9 @@ public class Commands implements CommandExecutor {
                }
 
             player.sendMessage(UtilsRef.colorInfo(DonjonsMain.prefix + "Les coordonnées sont :\nx : &6" +
-                    ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") +
-                    " &fy : &6" + ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") +
-                    " &fz : &6" + ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")));
+                    Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") +
+                    " &fy : &6" + Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") +
+                    " &fz : &6" + Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")));
             return true;
            }
 
@@ -73,7 +72,7 @@ public class Commands implements CommandExecutor {
 
                if(DonjonsMain.mobLocation.isEmpty()){
 
-                   if(ConfigMondes.getMondes(player.getWorld().getName()).getString("boss.location.x") == null){
+                   if(Mondes.getMondes(player.getWorld().getName()).getString("boss.location.x") == null){
 
                        player.sendMessage(DonjonsMain.prefix + "Aucun boss n'est présent dans ce monde.");
                        return true;
@@ -87,9 +86,9 @@ public class Commands implements CommandExecutor {
                }
 
                player.sendMessage(UtilsRef.colorInfo(DonjonsMain.prefix + "Les dernières coordonnées du boss sont :\n" + "x : &6" +
-                       ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).getInt("boss.location.x") +
-                       " &fy : &6" + ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).getInt("boss.location.y") +
-                       " &fz: &6" + ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).getInt("boss.location.z")));
+                       Mondes.getMondes(DonjonsMain.worlds.get(0)).getInt("boss.location.x") +
+                       " &fy : &6" + Mondes.getMondes(DonjonsMain.worlds.get(0)).getInt("boss.location.y") +
+                       " &fz: &6" + Mondes.getMondes(DonjonsMain.worlds.get(0)).getInt("boss.location.z")));
 
                return true;
            }
@@ -102,8 +101,8 @@ public class Commands implements CommandExecutor {
             DonjonsMain.instance.reloadConfig();
 
             try {
-                ConfigInformations.reload();
-                ConfigInformations.save();
+                Informations.reload();
+                Informations.save();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }

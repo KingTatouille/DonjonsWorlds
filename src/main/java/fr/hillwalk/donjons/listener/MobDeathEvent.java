@@ -1,12 +1,11 @@
 package fr.hillwalk.donjons.listener;
 
 import fr.hillwalk.donjons.DonjonsMain;
-import fr.hillwalk.donjons.configs.ConfigMondes;
+import fr.hillwalk.donjons.configs.Mondes;
 import fr.hillwalk.donjons.runnable.EndDonjons;
 import fr.hillwalk.donjons.utils.UtilsRef;
 import io.lumine.xikage.mythicmobs.api.bukkit.events.MythicMobDeathEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -25,7 +24,7 @@ public class MobDeathEvent implements Listener {
 
         if(DonjonsMain.worlds.isEmpty())return;
         if(!e.getMob().getLocation().getWorld().getName().equalsIgnoreCase(DonjonsMain.worlds.get(0))) return;
-        if(!e.getMob().getDisplayName().contains(ConfigMondes.getMondes(DonjonsMain.worlds.get(0)).getString("boss.name"))) return;
+        if(!e.getMob().getDisplayName().contains(Mondes.getMondes(DonjonsMain.worlds.get(0)).getString("boss.name").toUpperCase())) return;
 
         BukkitRunnable task = new EndDonjons();
 

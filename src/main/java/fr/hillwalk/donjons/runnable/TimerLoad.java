@@ -1,7 +1,7 @@
 package fr.hillwalk.donjons.runnable;
 
 import fr.hillwalk.donjons.DonjonsMain;
-import fr.hillwalk.donjons.configs.ConfigInformations;
+import fr.hillwalk.donjons.configs.Informations;
 import fr.hillwalk.donjons.utils.UtilsRef;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -23,7 +23,7 @@ public class TimerLoad extends BukkitRunnable {
     @Override
     public void run() {
         if(Bukkit.getServer().getOnlinePlayers().isEmpty()){
-            if(!ConfigInformations.getInfos().getBoolean("OpenPortail")){
+            if(!Informations.getInfos().getBoolean("OpenPortail")){
                 if(UtilsRef.randomNumber(2) == 1){
                     DonjonsMain.instance.getLogger().info("No players online !");
                 }
@@ -35,12 +35,12 @@ public class TimerLoad extends BukkitRunnable {
         }
 
 
-        if(!ConfigInformations.getInfos().getBoolean("OpenPortail")){
+        if(!Informations.getInfos().getBoolean("OpenPortail")){
             BukkitRunnable loadSchematic = new SchematicLoad();
             loadSchematic.runTaskLater(DonjonsMain.instance, DonjonsMain.instance.getConfig().getLong("timing"));
             Bukkit.broadcastMessage("Attention ! \nUn portail va apparaître dans : " + ChatColor.GOLD +  UtilsRef.timerMessage(DonjonsMain.instance.getConfig().getInt("durationSeconds")));
-            ConfigInformations.getInfos().set("OpenPortail", true);
-            ConfigInformations.save();
+            Informations.getInfos().set("OpenPortail", true);
+            Informations.save();
 
         }
     }

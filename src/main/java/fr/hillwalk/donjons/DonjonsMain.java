@@ -1,9 +1,9 @@
 package fr.hillwalk.donjons;
 
-import com.sk89q.worldedit.EditSession;
 import fr.hillwalk.donjons.commands.Commands;
-import fr.hillwalk.donjons.configs.ConfigInformations;
-import fr.hillwalk.donjons.configs.ConfigMondes;
+import fr.hillwalk.donjons.configs.Informations;
+import fr.hillwalk.donjons.configs.Messages;
+import fr.hillwalk.donjons.configs.Mondes;
 import fr.hillwalk.donjons.listener.HitEntity;
 import fr.hillwalk.donjons.listener.MobDeathEvent;
 import fr.hillwalk.donjons.listener.NetherPortalTeleport;
@@ -14,15 +14,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Entity;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import sun.plugin2.message.Message;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 public class DonjonsMain extends JavaPlugin {
 
@@ -34,12 +33,11 @@ public class DonjonsMain extends JavaPlugin {
 
     public static List<String> worlds = new ArrayList<String>();
     public static List<String> playerHits = new ArrayList<String>();
+    BukkitRunnable load = new TimerLoad();
 
 
     @Override
     public void onEnable(){
-
-        BukkitRunnable load = new TimerLoad();
 
 
         //Dire que l'instance est cette classe.
@@ -53,16 +51,22 @@ public class DonjonsMain extends JavaPlugin {
 
         //Sauvegarde de la config informations
         saveResource("informations.yml", false);
-        ConfigInformations.setup();
+        Informations.setup();
+
+        //Sauvegarde de la config informations
+        Messages.setup();
+
+        //Save schematics
+        saveResource("schematics/portal.schematic", true);
 
         //Setup de la config des mondes
         for (String str : getConfig().getStringList("worlds")){
-            ConfigMondes.setup(str);
+            Mondes.setup(str);
 
         }
 
         //Setup du monde principal
-        ConfigMondes.setupPrincipalWorld(UtilsRef.principalWorld().getName());
+        Mondes.setupPrincipalWorld(UtilsRef.principalWorld().getName());
 
 
         //Registre des commandes
@@ -83,20 +87,20 @@ public class DonjonsMain extends JavaPlugin {
 
 
         //Si le serveur s'est éteint sans avoir complété le donjon
-        if(ConfigInformations.getInfos().getString("portail") == null){
+        if(Informations.getInfos().getString("portail") == null){
             return;
 
         } else {
             GenerationStructure.pasteChem();
-            ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location", null);
-            ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.world", null);
-            ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.x", null);
-            ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.y", null);
-            ConfigMondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.z", null);
-            ConfigInformations.getInfos().set("OpenPortail", false);
-            ConfigInformations.getInfos().set("DiscoverArea", false);
-            ConfigInformations.getInfos().set("summonedBoss", null);
-            ConfigInformations.save();
+            Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location", null);
+            Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.world", null);
+            Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.x", null);
+            Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.y", null);
+            Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.z", null);
+            Informations.getInfos().set("OpenPortail", false);
+            Informations.getInfos().set("DiscoverArea", false);
+            Informations.getInfos().set("summonedBoss", null);
+            Informations.save();
         }
 
 
@@ -117,7 +121,7 @@ public class DonjonsMain extends JavaPlugin {
             for (String str : getConfig().getStringList("worlds")){
                 Bukkit.getServer().unloadWorld(str, false);
             }
-            getLogger().info("Les mondes sont maintenant inutilisables.");
+            getLogger().fine(Messages.getMessages().getString("worlds.disabled"));
 
         }
 

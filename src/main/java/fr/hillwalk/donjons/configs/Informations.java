@@ -11,7 +11,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 
-public class ConfigInformations {
+public class Informations {
 
 
     private static File informationFile;
