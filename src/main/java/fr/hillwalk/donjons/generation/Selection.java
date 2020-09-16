@@ -1,8 +1,7 @@
-package fr.hillwalk.donjons.teleportation;
+package fr.hillwalk.donjons.generation;
 
 
 import fr.hillwalk.donjons.utils.UtilsRef;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 

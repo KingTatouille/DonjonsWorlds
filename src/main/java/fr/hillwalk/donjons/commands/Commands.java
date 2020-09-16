@@ -36,7 +36,7 @@ public class Commands implements CommandExecutor {
 
             if(Informations.getInfos().getBoolean("OpenPortail") == false){
 
-                player.sendMessage(UtilsRef.colorInfo(DonjonsMain.prefix + "Aucun donjon n'est apparu !"));
+                player.sendMessage(UtilsRef.colorInfo(DonjonsMain.prefix + UtilsRef.colorInfo(Messages.getMessages().getString("commands.principalCommand"))));
                 return true;
             }
 
@@ -69,7 +69,7 @@ public class Commands implements CommandExecutor {
 
 
              //We send the message to the player
-            player.sendMessage(replace);
+            player.sendMessage(DonjonsMain.prefix + replace);
             return true;
            }
 
@@ -97,7 +97,7 @@ public class Commands implements CommandExecutor {
 
 
                //We send a message to the player
-               player.sendMessage(replace);
+               player.sendMessage(DonjonsMain.prefix + replace);
 
                return true;
            }

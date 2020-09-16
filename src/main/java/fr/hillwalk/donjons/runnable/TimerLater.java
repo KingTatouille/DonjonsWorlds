@@ -1,11 +1,15 @@
 package fr.hillwalk.donjons.runnable;
 
-import fr.hillwalk.donjons.generation.GenerationStructure;
+import fr.hillwalk.donjons.DonjonsMain;
+import fr.hillwalk.donjons.configs.Messages;
+import fr.hillwalk.donjons.utils.UtilsRef;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.IOException;
-
-public class SchematicLoad extends BukkitRunnable {
+public class TimerLater extends BukkitRunnable {
     /**
      * When an object implementing interface <code>Runnable</code> is used
      * to create a thread, starting the thread causes the object's
@@ -18,14 +22,17 @@ public class SchematicLoad extends BukkitRunnable {
      * @see Thread#run()
      */
 
+
     @Override
     public void run() {
-        GenerationStructure ref = new GenerationStructure();
-        try {
-            ref.loadSchematic();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        BukkitRunnable task = new EndDonjons();
+
+        task.runTaskTimer(DonjonsMain.instance, 20L, 20L);
+
+
     }
+
+
 
 }

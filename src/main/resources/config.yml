@@ -18,17 +18,21 @@ boss:
 #This is the principal world where the portals will spawn.
 world: world
 
+#Section TIMERS all in SECONDS
+
 #Represent when the server is reloaded or started.
-startTiming: 600
+startTiming: 30
 
 #Repeat the verifying task all 2 minutes
-repeatTiming: 2400
+repeatTiming: 120
 
-#Timing in ticks
-timing: 600
+#
+timing: 30
 
-#duration in seconds / timing = durationSecons so 600 ticks = 30 seconds
-durationSeconds: 30
+#Delay after the boss die, we will teleport all players in this world to the principal world.
+bossDeathTeleportation:
+  delay: 30
+
 
 #Let's make sure that the messages can have several different types!
 spawnBoss:
@@ -40,7 +44,7 @@ spawnBoss:
   stay: 30
   fadeOut: 5
   #For BROADCAST
-  customMessage: "%mob_name% appear at x: &6%mob_location_X% y: &6%mob_location_Y% z: &6%mob_location_Z%"
+  customMessage: "%mob_name% appear at x: &6%mob_location_X% &fy: &6%mob_location_Y% &fz: &6%mob_location_Z%"
 
 spawnPortal:
   method: BROADCAST
@@ -51,7 +55,26 @@ spawnPortal:
   stay: 30
   fadeOut: 5
   #For BROADCAST
-  customMessage: "A portal appeared in x: &6%portal_location_X% y: &6%portal_location_Y% z: &6%portal_location_Z%"
+  customMessage: "A portal appeared in x: &6%portal_location_X% &fy: &6%portal_location_Y% &fz: &6%portal_location_Z%"
+
+
+#Categories for sounds !
+#Sounds : https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
+spawnPortalSound:
+  enable: true
+  sound: AMBIENT_CAVE
+  volume: 1.0
+  pitch: 0.1
+changeWorld:
+  enable: true
+  sound: ENTITY_ENDERMAN_TELEPORT
+  volume: 1.0
+  pitch: 0.1
+bossDeath:
+  enable: true
+  sound: ENTITY_ELDER_GUARDIAN_DEATH
+  volume: 1.0
+  pitch: 0.1
 
 
 #Invok the boss

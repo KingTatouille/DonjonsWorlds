@@ -1,4 +1,4 @@
-package fr.hillwalk.donjons.teleportation;
+package fr.hillwalk.donjons.generation;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -27,7 +27,6 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import javax.rmi.CORBA.Util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -109,6 +108,7 @@ public class GenerationStructure {
                         .ignoreAirBlocks(false)
                         .build();
 
+                DonjonsMain.undo.put("undo", editSession);
 
                 switch (DonjonsMain.instance.getConfig().getString("spawnPortal.method")){
                     case "TITLE":
@@ -157,7 +157,7 @@ public class GenerationStructure {
                                 .replaceAll("%portal_location_Z%", String.valueOf(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")));
 
 
-                        Bukkit.broadcastMessage(UtilsRef.colorInfo(replacemessageBroadcast));
+                        Bukkit.broadcastMessage(DonjonsMain.prefix + UtilsRef.colorInfo(replacemessageBroadcast));
                         break;
 
 
@@ -165,10 +165,14 @@ public class GenerationStructure {
 
 
                 Operations.complete(operation);
-                for (Player player : Bukkit.getServer().getOnlinePlayers()){
 
-                    player.playSound(player.getLocation(), Sound.AMBIENT_CAVE, 1.0F, 1.0F);
 
+                if(DonjonsMain.instance.getConfig().getBoolean("bossDeath.enable")){
+                    for (Player player : Bukkit.getServer().getOnlinePlayers()){
+
+                       player.playSound(player.getLocation(), Sound.valueOf(DonjonsMain.instance.getConfig().getString("bossDeath.sound")), (float) DonjonsMain.instance.getConfig().getDouble("bossDeath.volume"), (float) DonjonsMain.instance.getConfig().getDouble("bossDeath.pitch"));
+
+                     }
                 }
 
                 createRegion();
@@ -388,7 +392,8 @@ public class GenerationStructure {
 
         //Check to see if the surroundings are safe or not
         if(DonjonsMain.instance.getConfig().getBoolean("reverse")){
-            return (blockPrevent.contains(below.getType())) || (block.getType().isSolid()) || (above.getType().isSolid());
+            return blockPrevent.contains(below.getType()) || !block.getType().isFlammable() || !block.getType().isBurnable()
+                    || !above.getType().isFlammable() || !above.getType().isBurnable();
         } else {
             return !(blockPrevent.contains(below.getType())) || (block.getType().isSolid()) || (above.getType().isSolid());
         }

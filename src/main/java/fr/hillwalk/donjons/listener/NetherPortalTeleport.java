@@ -2,14 +2,15 @@ package fr.hillwalk.donjons.listener;
 
 import fr.hillwalk.donjons.DonjonsMain;
 import fr.hillwalk.donjons.configs.Informations;
+import fr.hillwalk.donjons.configs.Messages;
 import fr.hillwalk.donjons.configs.Mondes;
-import fr.hillwalk.donjons.teleportation.GenerationStructure;
+import fr.hillwalk.donjons.generation.GenerationStructure;
 import fr.hillwalk.donjons.utils.UtilsRef;
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.api.exceptions.InvalidMobTypeException;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -18,6 +19,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitScheduler;
+
+import java.util.concurrent.TimeUnit;
 
 public class NetherPortalTeleport implements Listener {
 
@@ -34,7 +37,12 @@ public class NetherPortalTeleport implements Listener {
             if(world == null){
                 e.setCancelled(true);
 
-                e.getPlayer().sendMessage("Le portail n'envoie vers aucun monde ! Regardez la liste dans la config.");
+                if(e.getPlayer().isOp()){
+
+                    e.getPlayer().sendMessage(UtilsRef.colorInfo(Messages.getMessages().getString("errors.errorWorld")));
+
+                }
+
                 return;
             }
 
@@ -48,8 +56,22 @@ public class NetherPortalTeleport implements Listener {
 
 
                     e.setTo(new Location(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)), world.getSpawnLocation().getBlockX() ,world.getSpawnLocation().getBlockY() ,world.getSpawnLocation().getBlockZ()));
-                    e.getPlayer().sendMessage(DonjonsMain.instance.prefix + "Vous venez d'être téléporté dans le monde : " + world.getName());
 
+                    String teleportation = UtilsRef.colorInfo(Messages.getMessages().getString("teleportation.teleportationToWorld"));
+                    String replaceTeleportation = teleportation.replaceAll("%world_name%", world.getName());
+
+
+                    e.getPlayer().sendMessage(DonjonsMain.instance.prefix + replaceTeleportation);
+
+
+                    //Section sound
+                    if(DonjonsMain.instance.getConfig().getBoolean("changeWorld.enable")){
+
+                    e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.valueOf(DonjonsMain.instance.getConfig().getString("changeWorld.sound")), (float) DonjonsMain.instance.getConfig().getDouble("changeWorld.volume"), (float) DonjonsMain.instance.getConfig().getDouble("changeWorld.pitch"));
+
+                    }
+
+                    //Section Teleportation discover
                     if(!Informations.getInfos().getBoolean("discoverArea")){
                         onSummonMob();
                         Informations.getInfos().set("DiscoverArea", true);
@@ -61,7 +83,10 @@ public class NetherPortalTeleport implements Listener {
                 } catch (NullPointerException ex){
                     ex.getStackTrace();
                     DonjonsMain.instance.getLogger().info("Please be carefull ! The world :" + world.getName() + " is null...");
+
+                    if(e.getPlayer().isOp()){
                     e.getPlayer().sendMessage(DonjonsMain.prefix + UtilsRef.colorInfo("&cPlease check the console for more informations."));
+                    }
                 }
 
             }
@@ -171,7 +196,7 @@ public class NetherPortalTeleport implements Listener {
                 Informations.save();
 
             }
-        }, DonjonsMain.instance.getConfig().getLong("timing"));
+        }, TimeUnit.SECONDS.toSeconds(DonjonsMain.instance.getConfig().getLong("timing")) * 20);
 
     }
 

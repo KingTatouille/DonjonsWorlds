@@ -4,11 +4,10 @@ import fr.hillwalk.donjons.DonjonsMain;
 import fr.hillwalk.donjons.configs.Informations;
 import fr.hillwalk.donjons.configs.Messages;
 import fr.hillwalk.donjons.configs.Mondes;
-import fr.hillwalk.donjons.teleportation.GenerationStructure;
+import fr.hillwalk.donjons.generation.GenerationStructure;
 import org.apache.commons.lang.math.IntRange;
 import org.bukkit.*;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,16 +104,32 @@ public class UtilsRef {
 
     public static void reset(){
 
-        GenerationStructure.pasteChem();
+        if(DonjonsMain.undo.isEmpty()){
+            GenerationStructure.pasteChem();
+        } else {
+            DonjonsMain.undo.get("undo").undo(DonjonsMain.undo.get("undo"));
+        }
         Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location", null);
         Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.world", null);
         Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.x", null);
         Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.y", null);
         Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.z", null);
+        Mondes.save(UtilsRef.principalWorld().getName());
+        Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location", null);
+        Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.x", null);
+        Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.y", null);
+        Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.z", null);
+        Mondes.save(DonjonsMain.worlds.get(0));
         Informations.getInfos().set("OpenPortail", false);
         Informations.getInfos().set("DiscoverArea", false);
         Informations.getInfos().set("summonedBoss", null);
         Informations.save();
+
+        DonjonsMain.mobSpawn.clear();
+        DonjonsMain.undo.clear();
+        DonjonsMain.playerHits.clear();
+        DonjonsMain.worlds.clear();
+        DonjonsMain.mobLocation.clear();
 
     }
 

@@ -1,4 +1,4 @@
-package fr.hillwalk.donjons.teleportation;
+package fr.hillwalk.donjons.generation;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;

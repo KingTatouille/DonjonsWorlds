@@ -2,10 +2,13 @@ package fr.hillwalk.donjons.runnable;
 
 import fr.hillwalk.donjons.DonjonsMain;
 import fr.hillwalk.donjons.configs.Informations;
+import fr.hillwalk.donjons.configs.Messages;
 import fr.hillwalk.donjons.utils.UtilsRef;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.concurrent.TimeUnit;
 
 public class TimerLoad extends BukkitRunnable {
     /**
@@ -37,8 +40,13 @@ public class TimerLoad extends BukkitRunnable {
 
         if(!Informations.getInfos().getBoolean("OpenPortail")){
             BukkitRunnable loadSchematic = new SchematicLoad();
-            loadSchematic.runTaskLater(DonjonsMain.instance, DonjonsMain.instance.getConfig().getLong("timing"));
-            Bukkit.broadcastMessage("Attention ! \nUn portail va apparaître dans : " + ChatColor.GOLD +  UtilsRef.timerMessage(DonjonsMain.instance.getConfig().getInt("durationSeconds")));
+            loadSchematic.runTaskLater(DonjonsMain.instance, TimeUnit.SECONDS.toSeconds(DonjonsMain.instance.getConfig().getLong("timing")) * 20);
+
+            String portail = UtilsRef.colorInfo(Messages.getMessages().getString("worlds.portal"));
+            String replacePortal = portail.replaceAll("%seconds%", UtilsRef.timerMessage(DonjonsMain.instance.getConfig().getInt("timing")));
+
+
+            Bukkit.broadcastMessage(DonjonsMain.prefix + replacePortal);
             Informations.getInfos().set("OpenPortail", true);
             Informations.save();
 
