@@ -79,14 +79,16 @@ public class GenerationStructure {
 
         World world = new BukkitWorld(UtilsRef.principalWorld());
 
-        BlockVector3 min = BlockVector3.at(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") - 1,
-                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y"),
-                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") + 1);
-        BlockVector3 max = BlockVector3.at(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") + 7,
-                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") + 256,
-                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") - 7);
+        BlockVector3 min = BlockVector3.at(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x"),
+                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") - 15,
+                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z"));
+        System.out.println("Copy min: " + min);
+        BlockVector3 max = BlockVector3.at(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") + 8,
+                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") + 15,
+                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") + 6);
+        System.out.println("Copy max: " + max);
 
-        GenerationSchematic.copy(world, min, max);
+            GenerationSchematic.copy(world, min, max);
 
          /*
 
@@ -167,6 +169,7 @@ public class GenerationStructure {
                 Operations.complete(operation);
 
 
+
                 if(DonjonsMain.instance.getConfig().getBoolean("bossDeath.enable")){
                     for (Player player : Bukkit.getServer().getOnlinePlayers()){
 
@@ -192,6 +195,8 @@ public class GenerationStructure {
                 //TODO Auto-generated catch block
                 e.printStackTrace();
             }
+
+            //Section du portail
             Location loc1 = new Location(UtilsRef.principalWorld(),
                     Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") + 4,
                     Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") + 4,
@@ -203,6 +208,21 @@ public class GenerationStructure {
 
             Selection sel = new Selection();
             sel.selectedArea(loc1, loc2);
+
+
+            //Section de la dirt
+            Location location1 = new Location(UtilsRef.principalWorld(),
+                    Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x"),
+                    Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y"),
+                    Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z"));
+            Location location2 = new Location(UtilsRef.principalWorld(),
+                    Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") + 7,
+                    Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") - 15,
+                    Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") + 4);
+
+            Selection addDirt = new Selection();
+            sel.selectBelow(location1, location2);
+
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -226,9 +246,9 @@ public class GenerationStructure {
 
                 Operation operation = new ClipboardHolder(clipboard)
                         .createPaste(editSession)
-                        .to(BlockVector3.at(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") - 1,
-                                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y"),
-                                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") + 1))
+                        .to(BlockVector3.at(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x"),
+                                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") - 15,
+                                Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")))
                         .ignoreAirBlocks(false)
                         .build();
 
@@ -387,8 +407,8 @@ public class GenerationStructure {
 
         //Blocs aux alentours
         Block block = location.getWorld().getBlockAt(x, y, z);
-        Block below = location.getWorld().getBlockAt(x, y - 1, z);
-        Block above = location.getWorld().getBlockAt(x, y + 1, z);
+        Block below = location.getWorld().getBlockAt(x - 7, y - 1, z - 6);
+        Block above = location.getWorld().getBlockAt(x + 7, y + 1, z + 6);
 
         //Check to see if the surroundings are safe or not
         if(DonjonsMain.instance.getConfig().getBoolean("reverse")){

@@ -46,6 +46,7 @@ public class DonjonsMain extends JavaPlugin {
         instance = this;
         BukkitRunnable load = new TimerLoad();
 
+
         getLogger().info("is loaded!");
 
         //Sauvegarde de la config par défaut
@@ -86,23 +87,7 @@ public class DonjonsMain extends JavaPlugin {
         //On invoque le timer
         load.runTaskTimer(this, TimeUnit.SECONDS.toSeconds(getConfig().getLong("startTiming")) * 20, TimeUnit.SECONDS.toSeconds(getConfig().getLong("repeatTiming")) * 20);
 
-
-
-        File schematic = new File(DonjonsMain.instance.getDataFolder().getAbsoluteFile() + "/schematics/save.schematic");
-
-        if(schematic.exists()){
-            GenerationStructure.pasteChem();
-        }
-
-        //Si le serveur s'est éteint sans avoir complété le donjon
-        if(Informations.getInfos().getString("portail") == null){
-            return;
-
-        } else {
-            UtilsRef.reset();
-        }
-
-
+        UtilsRef.reset();
 
     }
 
@@ -122,7 +107,7 @@ public class DonjonsMain extends JavaPlugin {
             for (String str : getConfig().getStringList("worlds")){
                 Bukkit.getServer().unloadWorld(str, false);
             }
-            getLogger().fine(Messages.getMessages().getString("worlds.disabled"));
+            getLogger().fine("Worlds disabled!");
 
         }
 

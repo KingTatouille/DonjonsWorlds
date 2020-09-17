@@ -1,4 +1,4 @@
-name: RandomDonjons
+name: WorldDungeons
 version: 1.0.0
 main: fr.hillwalk.donjons.DonjonsMain
 author: Hillwalk
@@ -6,5 +6,5 @@ api-version: 1.15
 
 commands:
   randomdonjon:
-    description: Commande principale.
+    description: Principal command.
     aliases: rd

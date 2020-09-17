@@ -110,44 +110,61 @@ public class NetherPortalTeleport implements Listener {
             @Override
             public void run() {
 
-                GenerationStructure generation = new GenerationStructure();
-
-                String mobName = DonjonsMain.instance.getConfig().getStringList("summonBoss").get(UtilsRef.randomNumber(DonjonsMain.instance.getConfig().getStringList("summonBoss").size()));
-                Location location = generation.findSafeLocationMob(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)).getSpawnLocation());
-
-                DonjonsMain.mobSpawn.put(mobName, location);
-
-
-                Location mob = DonjonsMain.mobSpawn.get(mobName);
-
                 try {
-                    Entity entity = MythicMobs.inst().getAPIHelper().spawnMythicMob(mobName, DonjonsMain.mobSpawn.get(mobName));
-                    DonjonsMain.mobLocation.put(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)), entity.getLocation());
 
-                    Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.name", UtilsRef.colorInfo(entity.getName()));
-                    Mondes.save(DonjonsMain.worlds.get(0));
-                    Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.x", entity.getLocation().getBlockX());
-                    Mondes.save(DonjonsMain.worlds.get(0));
-                    Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.y", entity.getLocation().getBlockY());
-                    Mondes.save(DonjonsMain.worlds.get(0));
-                    Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.z", entity.getLocation().getBlockZ());
-                    Mondes.save(DonjonsMain.worlds.get(0));
-                } catch (InvalidMobTypeException e) {
-                    e.printStackTrace();
-                }
+                    String mobName = DonjonsMain.instance.getConfig().getStringList("summonBoss").get(UtilsRef.randomNumber(DonjonsMain.instance.getConfig().getStringList("summonBoss").size()));
 
-                switch (DonjonsMain.instance.getConfig().getString("spawnBoss.method")){
-                    case "TITLE":
+                    if(DonjonsMain.instance.getConfig().getBoolean("bossSpawn.enabled") && !DonjonsMain.instance.getConfig().getBoolean("RandomSpawn")){
 
-                        String title = UtilsRef.colorInfo(DonjonsMain.instance.getConfig().getString("spawnBoss.customTitle"));
-                        String repalceTitle = title.replaceAll("%mobName%", mobName)
-                                .replaceAll("%mob_location_X%", String.valueOf(DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockX()))
-                                .replaceAll("%mob_location_Y%", String.valueOf(DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockY()))
-                                .replaceAll("%mob_location_Z%", String.valueOf(DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockZ()));
+                        World world = Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0));
 
 
+                        Location location = new Location(world,
+                                DonjonsMain.instance.getConfig().getInt("bossSpawn." + DonjonsMain.worlds.get(0) + ".x"),
+                                DonjonsMain.instance.getConfig().getInt("bossSpawn." + DonjonsMain.worlds.get(0) + ".y"),
+                                DonjonsMain.instance.getConfig().getInt("bossSpawn." + DonjonsMain.worlds.get(0) + ".z"));
 
-                        if(DonjonsMain.instance.getConfig().getString("BossAppear.customSubTitle") == "NULL") {
+                        DonjonsMain.mobSpawn.put(mobName, location);
+
+                        Entity entity = MythicMobs.inst().getAPIHelper().spawnMythicMob(mobName, DonjonsMain.mobSpawn.get(mobName));
+                        DonjonsMain.mobLocation.put(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)), entity.getLocation());
+
+
+                    } else {
+                        GenerationStructure generation = new GenerationStructure();
+                        Location location = generation.findSafeLocationMob(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)).getSpawnLocation());
+
+                        DonjonsMain.mobSpawn.put(mobName, location);
+
+
+                        Location mob = DonjonsMain.mobSpawn.get(mobName);
+
+                        Entity entity = MythicMobs.inst().getAPIHelper().spawnMythicMob(mobName, DonjonsMain.mobSpawn.get(mobName));
+                        DonjonsMain.mobLocation.put(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)), entity.getLocation());
+
+                        Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.name", UtilsRef.colorInfo(entity.getName()));
+                        Mondes.save(DonjonsMain.worlds.get(0));
+                        Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.x", entity.getLocation().getBlockX());
+                        Mondes.save(DonjonsMain.worlds.get(0));
+                        Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.y", entity.getLocation().getBlockY());
+                        Mondes.save(DonjonsMain.worlds.get(0));
+                        Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.z", entity.getLocation().getBlockZ());
+                        Mondes.save(DonjonsMain.worlds.get(0));
+
+                    }
+
+                    switch (DonjonsMain.instance.getConfig().getString("spawnBoss.method")){
+                        case "TITLE":
+
+                            String title = UtilsRef.colorInfo(DonjonsMain.instance.getConfig().getString("spawnBoss.customTitle"));
+                            String repalceTitle = title.replaceAll("%mobName%", mobName)
+                                    .replaceAll("%mob_location_X%", String.valueOf(DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockX()))
+                                    .replaceAll("%mob_location_Y%", String.valueOf(DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockY()))
+                                    .replaceAll("%mob_location_Z%", String.valueOf(DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockZ()));
+
+
+
+                            if(DonjonsMain.instance.getConfig().getString("BossAppear.customSubTitle") == "NULL") {
 
                                 for(Player player : Bukkit.getServer().getOnlinePlayers()){
 
@@ -157,40 +174,45 @@ public class NetherPortalTeleport implements Listener {
 
                                 }
 
-                        } else {
+                            } else {
 
-                            String subTitle = UtilsRef.colorInfo(DonjonsMain.instance.getConfig().getString("spawnBoss.customSubTitle"));
-                            String replaceSubTitle = subTitle.replaceAll("%mob_name%", mobName)
+                                String subTitle = UtilsRef.colorInfo(DonjonsMain.instance.getConfig().getString("spawnBoss.customSubTitle"));
+                                String replaceSubTitle = subTitle.replaceAll("%mob_name%", mobName)
+                                        .replaceAll("%mob_location_X%", String.valueOf(DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockX()))
+                                        .replaceAll("%mob_location_Y%", String.valueOf(DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockY()))
+                                        .replaceAll("%mob_location_Z%", String.valueOf(DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockZ()));
+
+                                for(Player player : Bukkit.getServer().getOnlinePlayers()){
+
+                                    player.sendTitle(repalceTitle, replaceSubTitle,DonjonsMain.instance.getConfig().getInt("spawnBoss.fadeIn"),
+                                            DonjonsMain.instance.getConfig().getInt("spawnBoss.stay"),
+                                            DonjonsMain.instance.getConfig().getInt("spawnBoss.fadeOut"));
+
+                                }
+
+                            }
+
+                            break;
+
+                        case "BROADCAST" :
+
+                            String messageBroadcast = DonjonsMain.instance.getConfig().getString("spawnBoss.customMessage");
+                            String replacemessageBroadcast = messageBroadcast.replaceAll("%mob_name%", mobName)
                                     .replaceAll("%mob_location_X%", String.valueOf(DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockX()))
                                     .replaceAll("%mob_location_Y%", String.valueOf(DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockY()))
                                     .replaceAll("%mob_location_Z%", String.valueOf(DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockZ()));
 
-                            for(Player player : Bukkit.getServer().getOnlinePlayers()){
 
-                                player.sendTitle(repalceTitle, replaceSubTitle,DonjonsMain.instance.getConfig().getInt("spawnBoss.fadeIn"),
-                                        DonjonsMain.instance.getConfig().getInt("spawnBoss.stay"),
-                                        DonjonsMain.instance.getConfig().getInt("spawnBoss.fadeOut"));
-
-                            }
-
-                        }
-
-                     break;
-
-                    case "BROADCAST" :
-
-                        String messageBroadcast = DonjonsMain.instance.getConfig().getString("spawnBoss.customMessage");
-                        String replacemessageBroadcast = messageBroadcast.replaceAll("%mob_name%", mobName)
-                        .replaceAll("%mob_location_X%", String.valueOf(DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockX()))
-                        .replaceAll("%mob_location_Y%", String.valueOf(DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockY()))
-                        .replaceAll("%mob_location_Z%", String.valueOf(DonjonsMain.mobLocation.get(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0))).getBlockZ()));
+                            Bukkit.broadcastMessage(UtilsRef.colorInfo(replacemessageBroadcast));
+                            break;
 
 
-                        Bukkit.broadcastMessage(UtilsRef.colorInfo(replacemessageBroadcast));
-                        break;
-
-
+                    }
+                } catch (InvalidMobTypeException e) {
+                    e.printStackTrace();
                 }
+
+
 
                 Informations.getInfos().set("summonedBoss", true);
                 Informations.save();

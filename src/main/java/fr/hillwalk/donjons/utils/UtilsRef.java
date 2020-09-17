@@ -9,6 +9,7 @@ import org.apache.commons.lang.math.IntRange;
 import org.bukkit.*;
 import org.bukkit.configuration.Configuration;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -104,8 +105,13 @@ public class UtilsRef {
 
     public static void reset(){
 
+        File schematic = new File(DonjonsMain.instance.getDataFolder().getAbsoluteFile() + "/schematics/save.schematic");
+
         if(DonjonsMain.undo.isEmpty()){
+
+            if(schematic.exists())
             GenerationStructure.pasteChem();
+
         } else {
             DonjonsMain.undo.get("undo").undo(DonjonsMain.undo.get("undo"));
         }
@@ -115,11 +121,13 @@ public class UtilsRef {
         Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.y", null);
         Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.z", null);
         Mondes.save(UtilsRef.principalWorld().getName());
+        if(!DonjonsMain.worlds.isEmpty()){
         Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location", null);
         Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.x", null);
         Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.y", null);
         Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.z", null);
         Mondes.save(DonjonsMain.worlds.get(0));
+        }
         Informations.getInfos().set("OpenPortail", false);
         Informations.getInfos().set("DiscoverArea", false);
         Informations.getInfos().set("summonedBoss", null);
