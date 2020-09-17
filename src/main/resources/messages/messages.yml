@@ -7,13 +7,14 @@ worlds:
 commands:
   portal: "The coordinates are in: x: &6%portal_location_X% &fy: &6%portal_location_Y% &fz: &6%portal_location_Z%"
   boss: "The boss coordinates are in: x: &6%boss_location_X% &fy: &6%boss_location_Y% &fz: &6%boss_location_Z%"
-  principalCommand: "No dungeon has appeared!"
+  principalCommand: "Created by HillWalk !"
 teleportation:
   teleportationToWorld: "You have just entered the world: &6%world_name%"
   endDungeon: "The dungeon is finished! You have been teleported to the spawn!"
 errors:
   noPermissions: "&cSorry but you don't have the permission to do that."
   errorWorld: "The portal does not send to any world! Look at the list in the config."
+  reload: "&cYou can't use this command!"
 schedule:
   days: "days"
   hours: "hours"

@@ -1,10 +1,10 @@
 name: WorldDungeons
-version: 1.0.0
+version: 1.0.2
 main: fr.hillwalk.donjons.DonjonsMain
 author: Hillwalk
 api-version: 1.15
 
 commands:
-  randomdonjon:
+  worlddungeons:
     description: Principal command.
-    aliases: rd
+    aliases: wd

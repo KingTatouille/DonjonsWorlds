@@ -106,7 +106,7 @@ public class Commands implements CommandExecutor {
 
         if(args[0].equalsIgnoreCase("reload")){
 
-            if(!player.isOp() || !player.hasPermission("randomdungeons.reload") || !player.hasPermission("randomdungeons.admin")){
+            if(!player.isOp() || !player.hasPermission("wd.reload") || !player.hasPermission("wd.admin")){
                 player.sendMessage(UtilsRef.colorInfo(Messages.getMessages().getString("errors.reload")));
                 return true;
             }
@@ -117,6 +117,9 @@ public class Commands implements CommandExecutor {
             try {
                 Informations.reload();
                 Informations.save();
+
+                Messages.reload();
+                Messages.save();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }

@@ -2,6 +2,7 @@ package fr.hillwalk.donjons;
 
 import com.sk89q.worldedit.EditSession;
 import fr.hillwalk.donjons.commands.Commands;
+import fr.hillwalk.donjons.commands.TabcompleterCommands;
 import fr.hillwalk.donjons.configs.Informations;
 import fr.hillwalk.donjons.configs.Messages;
 import fr.hillwalk.donjons.configs.Mondes;
@@ -73,7 +74,8 @@ public class DonjonsMain extends JavaPlugin {
 
 
         //Registre des commandes
-        getCommand("randomdonjon").setExecutor(new Commands());
+        getCommand("worlddungeons").setExecutor(new Commands());
+        getCommand("worlddungeons").setTabCompleter(new TabcompleterCommands());
 
         //Registre des évents
         PluginManager pm = getServer().getPluginManager();

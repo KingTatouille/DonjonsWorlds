@@ -114,7 +114,7 @@ public class NetherPortalTeleport implements Listener {
 
                     String mobName = DonjonsMain.instance.getConfig().getStringList("summonBoss").get(UtilsRef.randomNumber(DonjonsMain.instance.getConfig().getStringList("summonBoss").size()));
 
-                    if(DonjonsMain.instance.getConfig().getBoolean("bossSpawn.enabled") && !DonjonsMain.instance.getConfig().getBoolean("RandomSpawn")){
+                    if(DonjonsMain.instance.getConfig().getBoolean("bossSpawn.enabled")){
 
                         World world = Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0));
 
@@ -131,6 +131,7 @@ public class NetherPortalTeleport implements Listener {
 
 
                     } else {
+
                         GenerationStructure generation = new GenerationStructure();
                         Location location = generation.findSafeLocationMob(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)).getSpawnLocation());
 
