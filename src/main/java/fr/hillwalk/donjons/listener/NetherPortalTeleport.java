@@ -72,7 +72,7 @@ public class NetherPortalTeleport implements Listener {
                     }
 
                     //Section Teleportation discover
-                    if(!Informations.getInfos().getBoolean("discoverArea")){
+                    if(!Informations.getInfos().getBoolean("DiscoverArea")){
                         onSummonMob();
                         Informations.getInfos().set("DiscoverArea", true);
                     } else {
