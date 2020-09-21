@@ -49,6 +49,13 @@ public class Commands implements CommandExecutor {
 
                if(Informations.getInfos().getBoolean("OpenPortail") == false){
 
+                   if(DonjonsMain.worlds.isEmpty()){
+
+                       player.sendMessage(DonjonsMain.prefix + UtilsRef.colorInfo(Messages.getMessages().getString("worlds.noPortal")));
+                       return true;
+
+                   }
+
                    if(!player.getWorld().getName().equalsIgnoreCase(DonjonsMain.worlds.get(0))){
 
                     player.sendMessage(DonjonsMain.prefix + UtilsRef.colorInfo(Messages.getMessages().getString("worlds.noPortal")));

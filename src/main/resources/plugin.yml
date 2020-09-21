@@ -1,8 +1,12 @@
 name: WorldDungeons
-version: 1.0.2
+version: 1.0.4
 main: fr.hillwalk.donjons.DonjonsMain
 author: Hillwalk
 api-version: 1.15
+depend:
+  - MythicMobs
+  - WorldEdit
+  - WorldGuard
 
 commands:
   worlddungeons:
