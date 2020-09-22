@@ -27,21 +27,7 @@ public class NetherPortalTeleport implements Listener {
 
         if(e.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL){
 
-            if(DonjonsMain.worlds.isEmpty())return;
 
-           World world = Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0));
-
-            if(world == null){
-                e.setCancelled(true);
-
-                if(e.getPlayer().isOp()){
-
-                    e.getPlayer().sendMessage(UtilsRef.colorInfo(Messages.getMessages().getString("errors.errorWorld")));
-
-                }
-
-                return;
-            }
 
 
             if(!DonjonsMain.instance.getConfig().getBoolean("portalSpawn")){
@@ -50,6 +36,21 @@ public class NetherPortalTeleport implements Listener {
                     Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") + 5,
                     Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") + 5,
                     Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") + 5))) {
+
+                World world = Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0));
+
+                if(world == null){
+                    e.setCancelled(true);
+
+                    if(e.getPlayer().isOp()){
+
+                        e.getPlayer().sendMessage(UtilsRef.colorInfo(Messages.getMessages().getString("errors.errorWorld")));
+
+                    }
+
+                    return;
+                }
+
 
                 try{
 
@@ -92,15 +93,30 @@ public class NetherPortalTeleport implements Listener {
                 }
             } else {
 
-                if(DonjonsMain.worlds.isEmpty()){
-                    e.setCancelled(true);
-                    e.getPlayer().sendMessage(DonjonsMain.prefix + Messages.getMessages().getString("errors.theWorld"));
-                }
-
                 Location locationWorld = new Location(UtilsRef.principalWorld(), Informations.getInfos().getInt("SpawnPortal.min.x"),Informations.getInfos().getInt("SpawnPortal.min.y"), Informations.getInfos().getInt("SpawnPortal.min.z"));
 
-                if(UtilsRef.around(e.getPlayer().getLocation().getChunk(), 2).contains(locationWorld.getChunk())) {
-                    System.out.println("Je suis bien dedans !");
+                if(UtilsRef.around(e.getPlayer().getLocation().getChunk(), 1).contains(locationWorld.getChunk())) {
+                    if(DonjonsMain.worlds.isEmpty()){
+                        e.setCancelled(true);
+                        e.getPlayer().sendMessage(DonjonsMain.prefix + Messages.getMessages().getString("errors.theWorld"));
+                        return;
+                    }
+
+                    World world = Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0));
+
+                    if(world == null){
+                        e.setCancelled(true);
+
+                        if(e.getPlayer().isOp()){
+
+                            e.getPlayer().sendMessage(UtilsRef.colorInfo(Messages.getMessages().getString("errors.errorWorld")));
+
+                        }
+
+                        return;
+                    }
+
+
 
                     try{
 

@@ -5,9 +5,11 @@ import fr.hillwalk.donjons.configs.Informations;
 import fr.hillwalk.donjons.configs.Messages;
 import fr.hillwalk.donjons.configs.Mondes;
 import fr.hillwalk.donjons.generation.GenerationStructure;
+import fr.hillwalk.donjons.runnable.TimerLoad;
 import org.apache.commons.lang.math.IntRange;
 import org.bukkit.*;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.util.*;
@@ -113,6 +115,7 @@ public class UtilsRef {
         Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.z", null);
         Mondes.save(UtilsRef.principalWorld().getName());
         if(!DonjonsMain.worlds.isEmpty()){
+            Bukkit.getServer().unloadWorld(DonjonsMain.worlds.get(0), false);
         Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.name", null);
             Mondes.save(DonjonsMain.worlds.get(0));
         Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location", null);
@@ -129,11 +132,13 @@ public class UtilsRef {
         Informations.getInfos().set("summonedBoss", null);
         Informations.save();
 
-        DonjonsMain.taskId.clear();
         DonjonsMain.mobSpawn.clear();
         DonjonsMain.playerHits.clear();
         DonjonsMain.worlds.clear();
         DonjonsMain.mobLocation.clear();
+
+
+
 
     }
 

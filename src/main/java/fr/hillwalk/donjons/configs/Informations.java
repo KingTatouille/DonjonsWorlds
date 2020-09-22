@@ -36,6 +36,7 @@ public class Informations {
 
         if(!informationFile.exists()) {
             try {
+                DonjonsMain.instance.saveResource("informations.yml", false);
                 informationFile.createNewFile();
 
             } catch (Exception e) {

@@ -61,6 +61,7 @@ public class TabcompleterCommands implements TabCompleter {
                 }
             }
 
+            if(sender.isOp() || sender.hasPermission("wd.admin")){
              if(args[0].equalsIgnoreCase("create")) {
                  if(args.length == 2){
                      List<String> commands = new ArrayList<>();
@@ -68,6 +69,7 @@ public class TabcompleterCommands implements TabCompleter {
 
                      return commands;
                 }
+            }
             }
 
 

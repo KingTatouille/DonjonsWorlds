@@ -40,7 +40,6 @@ public class DonjonsMain extends JavaPlugin {
 
 
     public static List<String> worlds = new ArrayList<String>();
-    public static List<Integer> taskId = new ArrayList<Integer>();
     public static List<String> playerHits = new ArrayList<String>();
 
 
@@ -59,8 +58,6 @@ public class DonjonsMain extends JavaPlugin {
         saveDefaultConfig();
 
         //Sauvegarde de la config informations
-        try{
-        saveResource("informations.yml", false);
         Informations.setup();
 
         //Sauvegarde de la config informations
@@ -78,9 +75,6 @@ public class DonjonsMain extends JavaPlugin {
 
         //Setup du monde principal
         Mondes.setupPrincipalWorld(UtilsRef.principalWorld().getName());
-        } catch (Exception e){
-            e.getStackTrace();
-        }
 
         //Registre des commandes
         getCommand("worlddungeons").setExecutor(new Commands());

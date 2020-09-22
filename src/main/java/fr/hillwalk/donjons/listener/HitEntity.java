@@ -19,9 +19,7 @@ public class HitEntity implements Listener {
         if(!e.getEntity().getLocation().getWorld().getName().equalsIgnoreCase(DonjonsMain.worlds.get(0))) return;
 
         if(e.getEntity().getName().contains(Mondes.getMondes(DonjonsMain.worlds.get(0)).getString("boss.name"))){
-            System.out.println("Vous le toucher");
                 for(Entity entity : e.getEntity().getNearbyEntities(20, 20, 20)){
-                    System.out.println("Vous êtes dans la zone");
 
 
                     for (Player player : Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)).getPlayers()){
@@ -29,7 +27,6 @@ public class HitEntity implements Listener {
                         if(!e.getEntity().getName().equalsIgnoreCase(player.getName()) && !DonjonsMain.playerHits.contains(player.getName())){
                             DonjonsMain.playerHits.add(player.getName());
                         }
-                        System.out.println(DonjonsMain.playerHits);
 
                     }
 

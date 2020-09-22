@@ -30,7 +30,9 @@ public class Selection {
                          } else {
                              Location loc = new Location(UtilsRef.principalWorld(), x, y, z);
                              locationPortals.add(loc);
-                             loc.getBlock().setType(Material.NETHER_PORTAL);
+                             if(loc.getBlock().getType() == Material.AIR){
+                                 loc.getBlock().setType(Material.NETHER_PORTAL);
+                             }
                         }
                     }
                 }

@@ -66,7 +66,7 @@ public class Commands implements CommandExecutor {
                     return true;
                 }
 
-
+                player.sendMessage(DonjonsMain.prefix + "The portal is created! Now you need to wait the ");
                 Informations.getInfos().set("SpawnPortal.name", args[1]);
                 Informations.save();
                 Informations.getInfos().set("SpawnPortal.min.x", DonjonsMain.selection1.get(player).getBlockX());

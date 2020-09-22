@@ -34,11 +34,6 @@ public class TimerLoad extends BukkitRunnable {
     public void run() {
 
 
-        DonjonsMain.taskId.add(this.getTaskId());
-
-
-
-
 
         if(Bukkit.getServer().getOnlinePlayers().isEmpty()){
             if(!Informations.getInfos().getBoolean("OpenPortail")){

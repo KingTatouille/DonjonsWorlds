@@ -42,7 +42,6 @@ public class EndDonjons extends BukkitRunnable {
 
             }
 
-            unloadWorld();
             UtilsRef.reset();
             this.cancel();
 
@@ -51,11 +50,6 @@ public class EndDonjons extends BukkitRunnable {
     }
 
 
-    private void unloadWorld(){
-
-        Bukkit.getServer().unloadWorld(DonjonsMain.worlds.get(0), false);
-
-    }
 
 
 

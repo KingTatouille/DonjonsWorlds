@@ -5,12 +5,14 @@ import fr.hillwalk.donjons.configs.Messages;
 import fr.hillwalk.donjons.utils.UtilsRef;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 
@@ -20,9 +22,13 @@ public class SelectionAxe implements Listener {
         public void axeSelection(PlayerInteractEvent e){
 
 
+            ItemStack item = e.getItem();
 
             if(e.getPlayer().isOp() || e.getPlayer().hasPermission("wd.admin") || e.getPlayer().hasPermission("wd.selection")){
-                 if(e.getAction() == Action.LEFT_CLICK_BLOCK && e.getPlayer().getInventory().getItemInMainHand().getType() == Material.IRON_AXE){
+                try{
+                if(item.getType() == Material.IRON_AXE){
+
+                 if(e.getAction() == Action.LEFT_CLICK_BLOCK){
                      e.setCancelled(true);
 
                     if(DonjonsMain.selection1.isEmpty()){
@@ -42,8 +48,9 @@ public class SelectionAxe implements Listener {
 
                 }
 
-                if(e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getPlayer().getInventory().getItemInMainHand().getType() == Material.IRON_AXE){
+                if(e.getAction() == Action.RIGHT_CLICK_BLOCK){
                     e.setCancelled(true);
+
 
                     if(DonjonsMain.selection2.isEmpty()){
 
@@ -57,12 +64,16 @@ public class SelectionAxe implements Listener {
 
                         DonjonsMain.selection2.put(e.getPlayer(), e.getClickedBlock().getLocation());
                         e.getPlayer().sendMessage(DonjonsMain.prefix + UtilsRef.colorInfo("You selected pos2 x: " + DonjonsMain.selection2.get(e.getPlayer()).getBlockX()) + " y: "+ DonjonsMain.selection2.get(e.getPlayer()).getBlockY() + " z: " + DonjonsMain.selection2.get(e.getPlayer()).getBlockZ());
-
                     }
 
                 }
+                }
 
 
+                } catch (NullPointerException ex){
+                    ex.getStackTrace();
+
+                }
             }
         }
 
