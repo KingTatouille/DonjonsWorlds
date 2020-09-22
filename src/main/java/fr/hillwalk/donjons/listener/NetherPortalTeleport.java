@@ -8,10 +8,7 @@ import fr.hillwalk.donjons.generation.GenerationStructure;
 import fr.hillwalk.donjons.utils.UtilsRef;
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.api.exceptions.InvalidMobTypeException;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -47,6 +44,8 @@ public class NetherPortalTeleport implements Listener {
             }
 
 
+            if(!DonjonsMain.instance.getConfig().getBoolean("portalSpawn")){
+
             if(UtilsRef.inCuboid(e.getPlayer().getLocation(), new Location(UtilsRef.principalWorld(), Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x"), Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y"), Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z")), new Location(UtilsRef.principalWorld(),
                     Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") + 5,
                     Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") + 5,
@@ -54,30 +53,31 @@ public class NetherPortalTeleport implements Listener {
 
                 try{
 
+                       e.setTo(new Location(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)), world.getSpawnLocation().getBlockX() ,world.getSpawnLocation().getBlockY() ,world.getSpawnLocation().getBlockZ()));
 
-                    e.setTo(new Location(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)), world.getSpawnLocation().getBlockX() ,world.getSpawnLocation().getBlockY() ,world.getSpawnLocation().getBlockZ()));
-
-                    String teleportation = UtilsRef.colorInfo(Messages.getMessages().getString("teleportation.teleportationToWorld"));
-                    String replaceTeleportation = teleportation.replaceAll("%world_name%", world.getName());
-
-
-                    e.getPlayer().sendMessage(DonjonsMain.instance.prefix + replaceTeleportation);
+                       String teleportation = UtilsRef.colorInfo(Messages.getMessages().getString("teleportation.teleportationToWorld"));
+                       String replaceTeleportation = teleportation.replaceAll("%world_name%", world.getName());
 
 
-                    //Section sound
-                    if(DonjonsMain.instance.getConfig().getBoolean("changeWorld.enable")){
+                       e.getPlayer().sendMessage(DonjonsMain.instance.prefix + replaceTeleportation);
 
-                    e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.valueOf(DonjonsMain.instance.getConfig().getString("changeWorld.sound")), (float) DonjonsMain.instance.getConfig().getDouble("changeWorld.volume"), (float) DonjonsMain.instance.getConfig().getDouble("changeWorld.pitch"));
 
-                    }
+                       //Section sound
+                       if(DonjonsMain.instance.getConfig().getBoolean("changeWorld.enable")){
 
-                    //Section Teleportation discover
-                    if(!Informations.getInfos().getBoolean("DiscoverArea")){
-                        onSummonMob();
-                        Informations.getInfos().set("DiscoverArea", true);
-                    } else {
-                        return;
-                    }
+                           e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.valueOf(DonjonsMain.instance.getConfig().getString("changeWorld.sound")), (float) DonjonsMain.instance.getConfig().getDouble("changeWorld.volume"), (float) DonjonsMain.instance.getConfig().getDouble("changeWorld.pitch"));
+
+                       }
+
+                       //Section Teleportation discover
+                       if(!Informations.getInfos().getBoolean("DiscoverArea")){
+                           onSummonMob();
+                           Informations.getInfos().set("DiscoverArea", true);
+                       } else {
+                           return;
+                       }
+
+
 
 
                 } catch (NullPointerException ex){
@@ -88,6 +88,60 @@ public class NetherPortalTeleport implements Listener {
                     e.getPlayer().sendMessage(DonjonsMain.prefix + UtilsRef.colorInfo("&cPlease check the console for more informations."));
                     }
                 }
+
+                }
+            } else {
+
+                if(DonjonsMain.worlds.isEmpty()){
+                    e.setCancelled(true);
+                    e.getPlayer().sendMessage(DonjonsMain.prefix + Messages.getMessages().getString("errors.theWorld"));
+                }
+
+                Location locationWorld = new Location(UtilsRef.principalWorld(), Informations.getInfos().getInt("SpawnPortal.min.x"),Informations.getInfos().getInt("SpawnPortal.min.y"), Informations.getInfos().getInt("SpawnPortal.min.z"));
+
+                if(UtilsRef.around(e.getPlayer().getLocation().getChunk(), 2).contains(locationWorld.getChunk())) {
+                    System.out.println("Je suis bien dedans !");
+
+                    try{
+
+                        e.setTo(new Location(Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)), world.getSpawnLocation().getBlockX() ,world.getSpawnLocation().getBlockY() ,world.getSpawnLocation().getBlockZ()));
+
+                        String teleportation = UtilsRef.colorInfo(Messages.getMessages().getString("teleportation.teleportationToWorld"));
+                        String replaceTeleportation = teleportation.replaceAll("%world_name%", world.getName());
+
+
+                        e.getPlayer().sendMessage(DonjonsMain.instance.prefix + replaceTeleportation);
+
+
+                        //Section sound
+                        if(DonjonsMain.instance.getConfig().getBoolean("changeWorld.enable")){
+
+                            e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.valueOf(DonjonsMain.instance.getConfig().getString("changeWorld.sound")), (float) DonjonsMain.instance.getConfig().getDouble("changeWorld.volume"), (float) DonjonsMain.instance.getConfig().getDouble("changeWorld.pitch"));
+
+                        }
+
+                        //Section Teleportation discover
+                        if(!Informations.getInfos().getBoolean("DiscoverArea")){
+                            onSummonMob();
+                            Informations.getInfos().set("DiscoverArea", true);
+                        } else {
+                            return;
+                        }
+
+
+
+
+                    } catch (NullPointerException ex){
+                        ex.getStackTrace();
+                        DonjonsMain.instance.getLogger().info("Please be carefull ! The world :" + world.getName() + " is null...");
+
+                        if(e.getPlayer().isOp()){
+                            e.getPlayer().sendMessage(DonjonsMain.prefix + UtilsRef.colorInfo("&cPlease check the console for more informations."));
+                        }
+                    }
+
+                }
+
 
             }
 

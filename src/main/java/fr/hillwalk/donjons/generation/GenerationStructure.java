@@ -21,6 +21,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import fr.hillwalk.donjons.DonjonsMain;
+import fr.hillwalk.donjons.configs.Messages;
 import fr.hillwalk.donjons.configs.Mondes;
 import fr.hillwalk.donjons.utils.UtilsRef;
 import org.bukkit.*;
@@ -82,11 +83,9 @@ public class GenerationStructure {
         BlockVector3 min = BlockVector3.at(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x"),
                 Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") - 15,
                 Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z"));
-        System.out.println("Copy min: " + min);
         BlockVector3 max = BlockVector3.at(Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.x") + 8,
                 Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.y") + 15,
                 Mondes.getMondes(UtilsRef.principalWorld().getName()).getInt("portail.location.z") + 6);
-        System.out.println("Copy max: " + max);
 
             GenerationSchematic.copy(world, min, max);
 
@@ -110,7 +109,6 @@ public class GenerationStructure {
                         .ignoreAirBlocks(false)
                         .build();
 
-                DonjonsMain.undo.put("undo", editSession);
 
                 switch (DonjonsMain.instance.getConfig().getString("spawnPortal.method")){
                     case "TITLE":
@@ -168,14 +166,10 @@ public class GenerationStructure {
 
                 Operations.complete(operation);
 
-
-
-                if(DonjonsMain.instance.getConfig().getBoolean("bossDeath.enable")){
-                    for (Player player : Bukkit.getServer().getOnlinePlayers()){
-
-                       player.playSound(player.getLocation(), Sound.valueOf(DonjonsMain.instance.getConfig().getString("bossDeath.sound")), (float) DonjonsMain.instance.getConfig().getDouble("bossDeath.volume"), (float) DonjonsMain.instance.getConfig().getDouble("bossDeath.pitch"));
-
-                     }
+                if(DonjonsMain.instance.getConfig().getBoolean("spawnPortalSound.enable")){
+                    for(Player player : Bukkit.getServer().getOnlinePlayers()){
+                        player.playSound(player.getLocation(), Sound.valueOf(DonjonsMain.instance.getConfig().getString("spawnPortalSound.sound")), (float) DonjonsMain.instance.getConfig().getDouble("spawnPortalSound.volume"), (float) DonjonsMain.instance.getConfig().getDouble("spawnPortalSound.pitch"));
+                    }
                 }
 
                 createRegion();
@@ -184,15 +178,9 @@ public class GenerationStructure {
                 Bukkit.getServer().createWorld((new WorldCreator(DonjonsMain.worlds.get(0))));
 
 
-                /*
-
-                    Après que la structure soit générée
-
-                 */
-
 
             } catch (WorldEditException e) {
-                //TODO Auto-generated catch block
+
                 e.printStackTrace();
             }
 
@@ -224,12 +212,64 @@ public class GenerationStructure {
             sel.selectBelow(location1, location2);
 
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
+
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+    }
+
+    public void startEvents() {
+        DonjonsMain.worlds.add(UtilsRef.randomWorlds());
+
+
+        switch (DonjonsMain.instance.getConfig().getString("portalSpawnLocal.method")){
+            case "TITLE":
+
+
+                if(DonjonsMain.instance.getConfig().getString("portalSpawnLocal.customSubTitle") == "NULL") {
+
+                    for(Player player : Bukkit.getServer().getOnlinePlayers()){
+
+                        player.sendTitle(DonjonsMain.instance.getConfig().getString("portalSpawnLocal.customTitle"), null, DonjonsMain.instance.getConfig().getInt("portalSpawnLocal.fadeIn"),
+                                DonjonsMain.instance.getConfig().getInt("portalSpawnLocal.stay"),
+                                DonjonsMain.instance.getConfig().getInt("portalSpawnLocal.fadeOut"));
+
+                    }
+
+                } else {
+
+                    for(Player player : Bukkit.getServer().getOnlinePlayers()){
+
+                        player.sendTitle(DonjonsMain.instance.getConfig().getString("portalSpawnLocal.customTitle"), DonjonsMain.instance.getConfig().getString("portalSpawnLocal.customSubTitle"),DonjonsMain.instance.getConfig().getInt("portalSpawnLocal.fadeIn"),
+                                DonjonsMain.instance.getConfig().getInt("portalSpawnLocal.stay"),
+                                DonjonsMain.instance.getConfig().getInt("portalSpawnLocal.fadeOut"));
+
+                    }
+
+                }
+
+
+                break;
+
+            case "BROADCAST" :
+
+                Bukkit.broadcastMessage(DonjonsMain.prefix + UtilsRef.colorInfo(DonjonsMain.instance.getConfig().getString("portalSpawnLocal.customMessage")));
+                break;
+
+
+        }
+
+
+        if(DonjonsMain.instance.getConfig().getBoolean("spawnPortalSound.enable")){
+            for(Player player : Bukkit.getServer().getOnlinePlayers()){
+                player.playSound(player.getLocation(), Sound.valueOf(DonjonsMain.instance.getConfig().getString("spawnPortalSound.sound")), (float) DonjonsMain.instance.getConfig().getDouble("spawnPortalSound.volume"), (float) DonjonsMain.instance.getConfig().getDouble("spawnPortalSound.pitch"));
+            }
+        }
+
+        //Loading du monde
+        Bukkit.getServer().createWorld((new WorldCreator(DonjonsMain.worlds.get(0))));
 
     }
 
@@ -363,6 +403,8 @@ public class GenerationStructure {
     //On trouve la zone safe
     public Location findSafeLocation(Location location){
 
+
+
         Location randomLocation = randomTeleport(location);
 
         while (!isLocationSafe(randomLocation)){
@@ -370,15 +412,32 @@ public class GenerationStructure {
             randomLocation = randomTeleport(location);
         }
 
-        Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.world", randomLocation.getWorld().getName());
-        Mondes.save(UtilsRef.principalWorld().getName());
-        Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.x", randomLocation.getBlockX());
-        Mondes.save(UtilsRef.principalWorld().getName());
-        Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.y", randomLocation.getBlockY());
-        Mondes.save(UtilsRef.principalWorld().getName());
-        Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.z", randomLocation.getBlockZ());
-        Mondes.save(UtilsRef.principalWorld().getName());
 
+
+        if(DonjonsMain.instance.getConfig().getBoolean("portalSpawn.enabled")) {
+
+            Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.world", DonjonsMain.instance.getConfig().getString("portalSpawn.world"));
+            Mondes.save(UtilsRef.principalWorld().getName());
+            Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.x", DonjonsMain.instance.getConfig().getInt("portalSpawn.x"));
+            Mondes.save(UtilsRef.principalWorld().getName());
+            Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.y", DonjonsMain.instance.getConfig().getInt("portalSpawn.y"));
+            Mondes.save(UtilsRef.principalWorld().getName());
+            Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.z", DonjonsMain.instance.getConfig().getInt("portalSpawn.z"));
+            Mondes.save(UtilsRef.principalWorld().getName());
+
+
+        } else {
+
+            Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.world", randomLocation.getWorld().getName());
+            Mondes.save(UtilsRef.principalWorld().getName());
+            Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.x", randomLocation.getBlockX());
+            Mondes.save(UtilsRef.principalWorld().getName());
+            Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.y", randomLocation.getBlockY());
+            Mondes.save(UtilsRef.principalWorld().getName());
+            Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.z", randomLocation.getBlockZ());
+            Mondes.save(UtilsRef.principalWorld().getName());
+
+        }
 
 
         return randomLocation;

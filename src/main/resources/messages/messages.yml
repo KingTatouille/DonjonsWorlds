@@ -14,6 +14,7 @@ teleportation:
 errors:
   noPermissions: "&cSorry but you don't have the permission to do that."
   errorWorld: "The portal does not send to any world! Look at the list in the config."
+  theWorld: "&cSorry, but the flaw is under control. You can't pass right now."
   reload: "&cYou can't use this command!"
 schedule:
   days: "days"

@@ -4,8 +4,10 @@ import fr.hillwalk.donjons.DonjonsMain;
 import fr.hillwalk.donjons.configs.Informations;
 import fr.hillwalk.donjons.configs.Messages;
 import fr.hillwalk.donjons.configs.Mondes;
+import fr.hillwalk.donjons.generation.Selection;
 import fr.hillwalk.donjons.utils.UtilsRef;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -42,6 +44,58 @@ public class Commands implements CommandExecutor {
 
         }
 
+
+
+        if(args[0].equalsIgnoreCase("create")){
+
+            if(!player.isOp() || !player.hasPermission("wd.reload") || !player.hasPermission("wd.admin")){
+                player.sendMessage(UtilsRef.colorInfo(Messages.getMessages().getString("errors.reload")));
+                return true;
+            }
+
+            if(args.length == 0){
+                player.sendMessage(DonjonsMain.prefix + "Syntax: /worlddungeons create <name>");
+                return true;
+
+            }
+
+
+                if(DonjonsMain.selection1.isEmpty() && DonjonsMain.selection2.isEmpty()){
+
+                    player.sendMessage(DonjonsMain.prefix + "You need to select two position before do this.");
+                    return true;
+                }
+
+
+                Informations.getInfos().set("SpawnPortal.name", args[1]);
+                Informations.save();
+                Informations.getInfos().set("SpawnPortal.min.x", DonjonsMain.selection1.get(player).getBlockX());
+                Informations.save();
+                Informations.getInfos().set("SpawnPortal.min.y", DonjonsMain.selection1.get(player).getBlockY());
+                Informations.save();
+                Informations.getInfos().set("SpawnPortal.min.z", DonjonsMain.selection1.get(player).getBlockZ());
+                Informations.save();
+                Informations.getInfos().set("SpawnPortal.max.x", DonjonsMain.selection2.get(player).getBlockX());
+                Informations.save();
+                Informations.getInfos().set("SpawnPortal.max.y", DonjonsMain.selection2.get(player).getBlockY());
+                Informations.save();
+                Informations.getInfos().set("SpawnPortal.max.z", DonjonsMain.selection2.get(player).getBlockZ());
+                Informations.save();
+
+            Location loc1 = new Location(UtilsRef.principalWorld(),
+                    Informations.getInfos().getInt("SpawnPortal.min.x"),
+                    Informations.getInfos().getInt("SpawnPortal.min.y"),
+                    Informations.getInfos().getInt("SpawnPortal.min.z"));
+            Location loc2 = new Location(UtilsRef.principalWorld(),
+                    Informations.getInfos().getInt("SpawnPortal.max.x"),
+                    Informations.getInfos().getInt("SpawnPortal.max.y"),
+                    Informations.getInfos().getInt("SpawnPortal.max.z"));
+
+            Selection sel = new Selection();
+            sel.selectedArea(loc1, loc2);
+
+            return true;
+        }
 
         if(args[0].equalsIgnoreCase("pos")){
 

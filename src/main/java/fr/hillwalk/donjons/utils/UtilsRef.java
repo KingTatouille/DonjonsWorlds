@@ -10,9 +10,7 @@ import org.bukkit.*;
 import org.bukkit.configuration.Configuration;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class UtilsRef {
@@ -107,14 +105,7 @@ public class UtilsRef {
 
         File schematic = new File(DonjonsMain.instance.getDataFolder().getAbsoluteFile() + "/schematics/save.schematic");
 
-        if(DonjonsMain.undo.isEmpty()){
-
-            if(schematic.exists())
-            GenerationStructure.pasteChem();
-
-        } else {
-            DonjonsMain.undo.get("undo").undo(DonjonsMain.undo.get("undo"));
-        }
+        GenerationStructure.pasteChem();
         Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location", null);
         Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.world", null);
         Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.x", null);
@@ -122,9 +113,14 @@ public class UtilsRef {
         Mondes.getMondes(UtilsRef.principalWorld().getName()).set("portail.location.z", null);
         Mondes.save(UtilsRef.principalWorld().getName());
         if(!DonjonsMain.worlds.isEmpty()){
+        Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.name", null);
+            Mondes.save(DonjonsMain.worlds.get(0));
         Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location", null);
+            Mondes.save(DonjonsMain.worlds.get(0));
         Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.x", null);
+            Mondes.save(DonjonsMain.worlds.get(0));
         Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.y", null);
+            Mondes.save(DonjonsMain.worlds.get(0));
         Mondes.getMondes(DonjonsMain.worlds.get(0)).set("boss.location.z", null);
         Mondes.save(DonjonsMain.worlds.get(0));
         }
@@ -133,12 +129,31 @@ public class UtilsRef {
         Informations.getInfos().set("summonedBoss", null);
         Informations.save();
 
+        DonjonsMain.taskId.clear();
         DonjonsMain.mobSpawn.clear();
-        DonjonsMain.undo.clear();
         DonjonsMain.playerHits.clear();
         DonjonsMain.worlds.clear();
         DonjonsMain.mobLocation.clear();
 
+    }
+
+    //Crédit https://www.spigotmc.org/threads/getting-chunks-around-a-center-chunk-within-a-specific-radius.422279/
+
+    public static Collection<Chunk> around(Chunk origin, int radius) {
+        World world = origin.getWorld();
+
+        int length = (radius * 2) + 1;
+        Set<Chunk> chunks = new HashSet<>(length * length);
+
+        int cX = origin.getX();
+        int cZ = origin.getZ();
+
+        for (int x = -radius; x <= radius; x++) {
+            for (int z = -radius; z <= radius; z++) {
+                chunks.add(world.getChunkAt(cX + x, cZ + z));
+            }
+        }
+        return chunks;
     }
 
 

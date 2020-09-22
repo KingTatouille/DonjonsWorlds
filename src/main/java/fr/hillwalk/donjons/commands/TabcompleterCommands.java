@@ -16,7 +16,7 @@ import java.util.List;
 
 public class TabcompleterCommands implements TabCompleter {
 
-    private final String[] COMMANDS = { "pos", "reload" };
+    private final String[] COMMANDS = { "pos", "reload", "create" };
 
 
     /**
@@ -50,12 +50,6 @@ public class TabcompleterCommands implements TabCompleter {
             Collections.sort(completions);
 
 
-        if(!sender.isOp() || !sender.hasPermission("wd.reload") || !sender.hasPermission("wd.admin")){
-        if(args[0].equalsIgnoreCase("reload")) {
-            return null;
-        }
-        }
-
 
             if(args[0].equalsIgnoreCase("pos")) {
                 if(args.length == 2){
@@ -64,6 +58,15 @@ public class TabcompleterCommands implements TabCompleter {
                     commands.add("portal");
 
                     return commands;
+                }
+            }
+
+             if(args[0].equalsIgnoreCase("create")) {
+                 if(args.length == 2){
+                     List<String> commands = new ArrayList<>();
+                     commands.add("<name>");
+
+                     return commands;
                 }
             }
 

@@ -3,11 +3,16 @@ package fr.hillwalk.donjons.runnable;
 import fr.hillwalk.donjons.DonjonsMain;
 import fr.hillwalk.donjons.configs.Informations;
 import fr.hillwalk.donjons.configs.Messages;
+import fr.hillwalk.donjons.configs.Mondes;
+import fr.hillwalk.donjons.generation.GenerationStructure;
+import fr.hillwalk.donjons.generation.Selection;
 import fr.hillwalk.donjons.utils.UtilsRef;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class TimerLoad extends BukkitRunnable {
@@ -23,8 +28,18 @@ public class TimerLoad extends BukkitRunnable {
      * @see Thread#run()
      */
 
+
+
     @Override
     public void run() {
+
+
+        DonjonsMain.taskId.add(this.getTaskId());
+
+
+
+
+
         if(Bukkit.getServer().getOnlinePlayers().isEmpty()){
             if(!Informations.getInfos().getBoolean("OpenPortail")){
                 if(UtilsRef.randomNumber(2) == 1){
@@ -39,17 +54,38 @@ public class TimerLoad extends BukkitRunnable {
 
 
         if(!Informations.getInfos().getBoolean("OpenPortail")){
-            BukkitRunnable loadSchematic = new SchematicLoad();
-            loadSchematic.runTaskLater(DonjonsMain.instance, TimeUnit.SECONDS.toSeconds(DonjonsMain.instance.getConfig().getLong("timing")) * 20);
 
-            String portail = UtilsRef.colorInfo(Messages.getMessages().getString("worlds.portal"));
-            String replacePortal = portail.replaceAll("%seconds%", UtilsRef.timerMessage(DonjonsMain.instance.getConfig().getInt("timing")));
+            if(DonjonsMain.instance.getConfig().getBoolean("portalSpawn")){
+
+                if(Informations.getInfos().getString("SpawnPortal.name") == null){
+
+                    DonjonsMain.instance.getLogger().warning("The portal is not set!");
+                    return;
+
+                }
+                GenerationStructure ref = new GenerationStructure();
+                    ref.startEvents();
+                Informations.getInfos().set("OpenPortail", true);
+                Informations.save();
+
+            } else {
+
+                BukkitRunnable loadSchematic = new SchematicLoad();
+                loadSchematic.runTaskLater(DonjonsMain.instance, TimeUnit.SECONDS.toSeconds(DonjonsMain.instance.getConfig().getLong("timing")) * 20);
+
+                String portail = UtilsRef.colorInfo(Messages.getMessages().getString("worlds.portal"));
+                String replacePortal = portail.replaceAll("%seconds%", UtilsRef.timerMessage(DonjonsMain.instance.getConfig().getInt("timing")));
 
 
-            Bukkit.broadcastMessage(DonjonsMain.prefix + replacePortal);
-            Informations.getInfos().set("OpenPortail", true);
-            Informations.save();
+                Bukkit.broadcastMessage(DonjonsMain.prefix + replacePortal);
+                Informations.getInfos().set("OpenPortail", true);
+                Informations.save();
 
+            }
+
+
+        } else {
+            return;
         }
     }
 

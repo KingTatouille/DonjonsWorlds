@@ -1,6 +1,21 @@
 #Prefix
 prefix: "&f[&6RandomDungeons&f] &7&l>>&r"
 
+#If you don't want a random portal, you can set here.
+portalSpawn: false
+
+#If you set portalSpawn true you will need this.
+portalSpawnLocal:
+  method: BROADCAST
+  #For TITLE
+  customTitle: "&c&lWARNING"
+  customSubTitle: "A loophole has opened!"
+  fadeIn: 5
+  stay: 30
+  fadeOut: 5
+  #For BROADCAST
+  customMessage: "Warning ! A loophole has opened!"
+
 #Position du portail
 minX: -500
 maxX: 500
@@ -14,6 +29,7 @@ boss:
 
   minZ: -100
   maxZ: 100
+
 
 #This is the principal world where the portals will spawn.
 world: world
@@ -82,9 +98,6 @@ summonBoss:
   - SkeletonKing
   - AngrySludge
 
-
-#If you want the boss to randomly spawn on the map.
-RandomSpawn: true
 
 #If you checked RandomSpawn in false then you can tell the boss where it can arrive.
 bossSpawn:

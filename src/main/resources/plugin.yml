@@ -1,5 +1,5 @@
 name: WorldDungeons
-version: 1.0.5
+version: 1.0.7
 main: fr.hillwalk.donjons.DonjonsMain
 author: Hillwalk
 api-version: 1.15

@@ -59,9 +59,11 @@ public class MobDeathEvent implements Listener {
 
         Bukkit.broadcastMessage(DonjonsMain.prefix + replace);
 
-        if(DonjonsMain.instance.getConfig().getBoolean("spawnPortalSound.enable")){
-            for(Player player : Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)).getPlayers()){
-                player.playSound(player.getLocation(), Sound.valueOf(DonjonsMain.instance.getConfig().getString("spawnPortalSound.sound")), (float) DonjonsMain.instance.getConfig().getDouble("spawnPortalSound.volume"), (float) DonjonsMain.instance.getConfig().getDouble("spawnPortalSound.pitch"));
+        if(DonjonsMain.instance.getConfig().getBoolean("bossDeath.enable")){
+            for (Player player : Bukkit.getServer().getWorld(DonjonsMain.worlds.get(0)).getPlayers()){
+
+                player.playSound(player.getLocation(), Sound.valueOf(DonjonsMain.instance.getConfig().getString("bossDeath.sound")), (float) DonjonsMain.instance.getConfig().getDouble("bossDeath.volume"), (float) DonjonsMain.instance.getConfig().getDouble("bossDeath.pitch"));
+
             }
         }
 
